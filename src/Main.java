@@ -3,11 +3,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import models.AI;
 import models.TicTacToe;
 
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Scanner;
+
 
 /**
  * Created by peterzen on 2017-03-23.
@@ -34,57 +36,60 @@ public class Main {
          */
         private TicTacToe ticTacToe;
 
+        /**
+         * @var AI comouter
+         */
+        private AI computer;
+
+        private boolean hasWinner = false;
+
 
         private Game() {
             this.player = 'x';
-
             this.ticTacToe = new TicTacToe();
+            this.computer = new AI(this.ticTacToe, 'o');
 
             this.ticTacToe.showBoard();
 
             this.askForInput();
         }
 
-        public void askForInput() {
-            Scanner reader = new Scanner(System.in);  // Reading from System.in
-            System.out.println("Waar wil je je " + this.player + " zetten? (x <spatie> y) ");
+        private void askForInput() {
+            this.checkWinner();
 
-            this.doTurn(reader.nextLine());
-//            if(reader.next().matches("\\d\\s{1}\\d")) {
-//                this.doTurn(reader.next());
-//            }
-//            else {
-//                System.out.println("Je input is niet goed. De syntax moet zijn: x <spatie> y");
-//                this.askForInput();
-//            }
+            if(!this.hasWinner) {
+                Scanner reader = new Scanner(System.in);  // Reading from commandline
+                System.out.println("Waar wil je je " + this.player + " zetten? (x <spatie> y) ");
+
+                this.doTurn(reader.nextLine());
+            }
         }
 
-        public void doTurn(String turn) {
+        private void doTurn(String turn) {
             String[] turnPlace = turn.split("\\s+");
 
             if(ticTacToe.doTurn(Integer.valueOf(turnPlace[0]), Integer.valueOf(turnPlace[1]), this.player)) {
                 //player set the turn
+                computer.doTurn(ticTacToe.getBoard());
                 ticTacToe.showBoard();
-                if(ticTacToe.checkForWinner(this.player)) {
-                    System.out.println(this.player + " is the winner");
-                }
-                else {
-                    this.switchPlayer();
-                    this.askForInput();
-                }
+
+                this.askForInput();
             }
             else {
+                //ticTacToe.showBoard();
                 System.out.println("Dit hokje is al bezet of bestaat niet. Probeer het opnieuw");
                 this.askForInput();
             }
         }
 
-        public void switchPlayer() {
-            if(this.player == 'x') {
-                this.player = 'y';
+        public void checkWinner() {
+            if(ticTacToe.checkForWinner(this.player)) {
+                System.out.println(this.player + " is the winner");
+                this.hasWinner = true;
             }
-            else {
-                this.player = 'x';
+            else if(ticTacToe.checkForWinner(computer.getPlayer())) {
+                System.out.println(computer.getPlayer() + " is the winner");
+                this.hasWinner = true;
             }
         }
     }
