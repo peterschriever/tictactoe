@@ -28,6 +28,10 @@ public class TicTacToe {
         return this.board;
     }
 
+    public void setBoard(char[][] newBoard) {
+        this.board = newBoard;
+    }
+
     public void showBoard() {
         for(int x = 0; x < this.board.length; x++) {
             for(int y = 0; y < this.board[x].length; y++) {
@@ -38,8 +42,6 @@ public class TicTacToe {
     }
 
     public boolean doTurn(int x, int y, char player) {
-        System.out.println(x);
-        System.out.println(y);
 
         try {
             if(this.board[x - 1][y - 1] == ' ') {
@@ -56,9 +58,6 @@ public class TicTacToe {
     }
 
     public boolean checkForWinner(char player) {
-        //[[x, x, x],
-        // [x, x, x],
-        // [x, x, x]]
 
         for(int x = 0; x < this.board.length; x++) {
             //horizontal
