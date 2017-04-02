@@ -25,6 +25,10 @@ public class AI {
         this.player = player;
     }
 
+    public char getPlayer() {
+        return this.player;
+    }
+
     public void doTurn(char[][] board) {
         this.finishedTurn = false;
 
@@ -70,7 +74,6 @@ public class AI {
             return 50;
         }
 
-        if(this.getScore(x, y, board) > )
         board[x][y] = ' ';
         //check if I can with after placing this position
         return 1;
@@ -129,19 +132,6 @@ public class AI {
         //Debug
         System.out.println(Arrays.deepToString(newBoard));
 
-    }
-
-    private boolean checkForWinningVakje(int x, int y, char[][] testBoard, boolean otherPlayer) {
-        char player = this.oppositePlayer();
-
-        if((testBoard[x][0] == player && testBoard[x][1] == player && testBoard[x][2] == player) ||
-           (testBoard[0][y] == player && testBoard[1][y] == player && testBoard[2][y] == player) ||
-           (testBoard[0][0] == player && testBoard[1][1] == player && testBoard[2][2] == player) ||
-           (testBoard[0][2] == player && testBoard[1][1] == player && testBoard[2][0] == player)) {
-            return true;
-        }
-
-        return false;
     }
 
     private char oppositePlayer() {
