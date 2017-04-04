@@ -112,7 +112,9 @@ public class AI {
         int y = Integer.valueOf(biggest.getKey().split("")[1]);
 
         //make a new board where the AI placed his turn
-        newBoard[x][y] = this.player;
+        if(newBoard[x][y] == ' ') {
+            newBoard[x][y] = this.player;
+        }
 
         //Replace the tic-tac-toe board with the board where the AI placed his turn
         this.ticTacToe.setBoard(newBoard);
