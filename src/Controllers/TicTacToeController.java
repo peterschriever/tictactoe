@@ -1,6 +1,6 @@
-package controllers;
+package Controllers;
 
-import models.TicTacToe;
+import Models.TicTacToe;
 
 /**
  * Created by Eran on 27-3-2017.

@@ -1,6 +1,4 @@
-package models;
-
-import javafx.scene.layout.Pane;
+package Models;
 
 /**
  * Created by Eran on 27-3-2017.
