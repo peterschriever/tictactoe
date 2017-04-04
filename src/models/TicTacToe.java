@@ -17,9 +17,9 @@ public class TicTacToe {
     }
 
     private void initBoard() {
-        for(int x = 0; x < this.board.length; x++) {
-            for(int y = 0; y < this.board[x].length; y++) {
-                this.board[x][y] = ' ';
+        for(int y = 0; y < this.board.length; y++) {
+            for(int x = 0; x < this.board[y].length; x++) {
+                this.board[y][x] = ' ';
             }
         }
     }
@@ -33,19 +33,18 @@ public class TicTacToe {
     }
 
     public void showBoard() {
-        for(int x = 0; x < this.board.length; x++) {
-            for(int y = 0; y < this.board[x].length; y++) {
-                System.out.print(" " + this.board[x][y] + " | ");
+        for(int y = 0; y < this.board.length; y++) {
+            for(int x = 0; x < this.board[y].length; x++) {
+                System.out.print(" " + this.board[y][x] + " | ");
             }
             System.out.println();
         }
     }
 
-    public boolean doTurn(int x, int y, char player) {
-
+    public boolean doTurn(int y, int x, char player) {
         try {
-            if(this.board[x - 1][y - 1] == ' ') {
-                this.board[x - 1][y - 1] = player;
+            if(this.board[y][x] == ' ') {
+                this.board[y][x] = player;
 
                 return true;
             }
@@ -59,13 +58,13 @@ public class TicTacToe {
 
     public boolean checkForWinner(char player) {
 
-        for(int x = 0; x < this.board.length; x++) {
+        for(int y = 0; y < this.board.length; y++) {
             //horizontal
-            if(this.board[x][0] == player && this.board[x][1] == player && this.board[x][2] == player)
+            if(this.board[y][0] == player && this.board[y][1] == player && this.board[y][2] == player)
                 return true;
 
             //vertical
-            if(this.board[0][x] == player && this.board[1][x] == player && this.board[2][x] == player)
+            if(this.board[0][y] == player && this.board[1][y] == player && this.board[2][y] == player)
                 return true;
         }
 
@@ -80,8 +79,8 @@ public class TicTacToe {
 
     public boolean checkDraw() {
         boolean filled = true;
-        for(int x = 0; x < this.board.length; x++) {
-            if( ( this.board[x][0] == ' ' || this.board[x][1] == ' ' || this.board[x][2] == ' ' ) )
+        for(int y = 0; y < this.board.length; y++) {
+            if( ( this.board[y][0] == ' ' || this.board[y][1] == ' ' || this.board[y][2] == ' ' ) )
                 filled = false;
         }
 

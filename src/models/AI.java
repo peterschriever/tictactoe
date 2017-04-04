@@ -31,14 +31,14 @@ public class AI {
         //Check per vakje of de AI kan winnen ná het zetten van het vakje. Zoja: geef score van 5 aan dat vakje
         //Anders: geef score -1
         int score;
-        for(int x = 0; x < board.length; x++) {
-            for(int y = 0; y < board[x].length; y++) {
-                if(board[x][y] == ' ') {
-                    score = this.getScore(x, y, board);
-                    this.possibleTurns.put("" + x + y, score);
+        for(int y = 0; y < board.length; y++) {
+            for(int x = 0; x < board[y].length; x++) {
+                if(board[y][x] == ' ') {
+                    score = this.getScore(y, x, board);
+                    this.possibleTurns.put("" + y + x, score);
                 }
                 else {
-                    this.possibleTurns.put("" + x + y, 0);
+                    this.possibleTurns.put("" + y + x, 0);
                 }
             }
         }
@@ -49,40 +49,40 @@ public class AI {
 
     }
 
-    private int getScore(int x, int y, char[][] board) {
-        board[x][y] = this.player;
+    private int getScore(int y, int x, char[][] board) {
+        board[y][x] = this.player;
         //check if I can win with this position
-        if(this.checkIfICanWin(x, y, board)) {
-            board[x][y] = ' ';
+        if(this.checkIfICanWin(y, x, board)) {
+            board[y][x] = ' ';
             return 100;
         }
 
         //check if the other player can win with this position
-        if(this.checkIfOtherCanWin(x, y, board)) {
-            board[x][y] = ' ';
+        if(this.checkIfOtherCanWin(y, x, board)) {
+            board[y][x] = ' ';
             return 50;
         }
 
-        board[x][y] = ' ';
+        board[y][x] = ' ';
         //check if I can with after placing this position
         return 1;
     }
 
-    private boolean checkIfICanWin(int x, int y, char[][] testBoard) {
-        testBoard[x][y] = this.player;
+    private boolean checkIfICanWin(int y, int x, char[][] testBoard) {
+        testBoard[y][x] = this.player;
 
-        return (testBoard[x][0] == this.player && testBoard[x][1] == this.player && testBoard[x][2] == this.player) ||
-                (testBoard[0][y] == this.player && testBoard[1][y] == this.player && testBoard[2][y] == this.player) ||
+        return (testBoard[y][0] == this.player && testBoard[y][1] == this.player && testBoard[y][2] == this.player) ||
+                (testBoard[0][x] == this.player && testBoard[1][x] == this.player && testBoard[2][x] == this.player) ||
                 (testBoard[0][0] == this.player && testBoard[1][1] == this.player && testBoard[2][2] == this.player) ||
                 (testBoard[0][2] == this.player && testBoard[1][1] == this.player && testBoard[2][0] == this.player);
     }
 
-    private boolean checkIfOtherCanWin(int x, int y, char[][] testBoard) {
+    private boolean checkIfOtherCanWin(int y, int x, char[][] testBoard) {
         char player = this.oppositePlayer();
-        testBoard[x][y] = player;
+        testBoard[y][x] = player;
 
-        return (testBoard[x][0] == player && testBoard[x][1] == player && testBoard[x][2] == player) ||
-                (testBoard[0][y] == player && testBoard[1][y] == player && testBoard[2][y] == player) ||
+        return (testBoard[y][0] == player && testBoard[y][1] == player && testBoard[y][2] == player) ||
+                (testBoard[0][x] == player && testBoard[1][x] == player && testBoard[2][x] == player) ||
                 (testBoard[0][0] == player && testBoard[1][1] == player && testBoard[2][2] == player) ||
                 (testBoard[0][2] == player && testBoard[1][1] == player && testBoard[2][0] == player);
     }
@@ -106,14 +106,14 @@ public class AI {
         //Get the current playing board
         char[][] newBoard = this.ticTacToe.getBoard();
         //Subtract the x value from the key
-        int x = Integer.valueOf(biggest.getKey().split("")[0]);
+        int y = Integer.valueOf(biggest.getKey().split("")[0]);
 
         //subtract the y value from the key
-        int y = Integer.valueOf(biggest.getKey().split("")[1]);
+        int x = Integer.valueOf(biggest.getKey().split("")[1]);
 
         //make a new board where the AI placed his turn
-        if(newBoard[x][y] == ' ') {
-            newBoard[x][y] = this.player;
+        if(newBoard[y][x] == ' ') {
+            newBoard[y][x] = this.player;
         }
 
         //Replace the tic-tac-toe board with the board where the AI placed his turn

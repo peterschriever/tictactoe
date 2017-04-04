@@ -50,7 +50,8 @@ public class Main {
         private void doTurn(String turn) {
             String[] turnPlace = turn.split("\\s+");
 
-            if(ticTacToe.doTurn(Integer.valueOf(turnPlace[0]), Integer.valueOf(turnPlace[1]), this.player)) {
+
+            if(ticTacToe.doTurn(Integer.valueOf(turnPlace[0]), Integer.valueOf(turnPlace[1]), this.player)) { // y x
                 //player set the turn
                 computer.doTurn(ticTacToe.getBoard());
                 ticTacToe.showBoard();
