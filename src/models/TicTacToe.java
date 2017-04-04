@@ -77,4 +77,14 @@ public class TicTacToe {
 
         return false;
     }
+
+    public boolean checkDraw() {
+        boolean filled = true;
+        for(int x = 0; x < this.board.length; x++) {
+            if( ( this.board[x][0] == ' ' || this.board[x][1] == ' ' || this.board[x][2] == ' ' ) )
+                filled = false;
+        }
+
+        return filled && !this.checkForWinner('o') && !this.checkForWinner('y');
+    }
 }

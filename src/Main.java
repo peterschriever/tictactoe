@@ -73,6 +73,10 @@ public class Main {
                 System.out.println(computer.getPlayer() + " is the winner");
                 this.hasWinner = true;
             }
+            else if(ticTacToe.checkDraw()) {
+                System.out.println("Draw!");
+                this.hasWinner = true;
+            }
         }
     }
 }
