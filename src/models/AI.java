@@ -2,15 +2,9 @@ package models;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-/**
- * Created by Eran on 29-3-2017.
- */
 public class AI {
-
-    private boolean finishedTurn = false;
 
     private TicTacToe ticTacToe;
 
@@ -30,20 +24,17 @@ public class AI {
     }
 
     public void doTurn(char[][] board) {
-        this.finishedTurn = false;
 
         //check de open vakjes.
         //dan: check of de andere gebruiker kan winnen met een van de open vakjes.
         //zoja: geef dat vakje een score van 10. Sla op in mogelijke zet array
         //Check per vakje of de AI kan winnen ná het zetten van het vakje. Zoja: geef score van 5 aan dat vakje
         //Anders: geef score -1
-        char[][] testBoard = board;
-        int score = 0;
-        int vakje = 0;
+        int score;
         for(int x = 0; x < board.length; x++) {
             for(int y = 0; y < board[x].length; y++) {
                 if(board[x][y] == ' ') {
-                    score = this.getScore(x, y, testBoard);
+                    score = this.getScore(x, y, board);
                     this.possibleTurns.put("" + x + y, score);
                 }
                 else {
@@ -56,11 +47,9 @@ public class AI {
 
         this.placeTurn();
 
-        this.finishedTurn = true;
-
     }
 
-    public int getScore(int x, int y, char[][] board) {
+    private int getScore(int x, int y, char[][] board) {
         board[x][y] = this.player;
         //check if I can win with this position
         if(this.checkIfICanWin(x, y, board)) {
@@ -98,7 +87,7 @@ public class AI {
                 (testBoard[0][2] == player && testBoard[1][1] == player && testBoard[2][0] == player);
     }
 
-    public void placeTurn() {
+    private void placeTurn() {
 
         //Initialize the biggest key-value pair
         Map.Entry<String, Integer> biggest = null;
@@ -139,25 +128,5 @@ public class AI {
             return 'x';
         }
         return 'o';
-
-    }
-
-
-//    private char convertIntToPlace(int place) {
-//        char[][] board = this.ticTacToe.getBoard();
-//        for(int x = 0; x < board.length; x++) {
-//            for(int y = 0; y < board[x].length; y++) {
-//                if(x + y == place)
-//                    return board[x][y];
-//            }
-//        }
-//    }
-
-    /**
-     * Checks whether the AI has finished its turn
-     * @return boolean
-     */
-    public boolean hasFinishedTurn() {
-        return this.finishedTurn;
     }
 }

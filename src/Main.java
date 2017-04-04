@@ -1,13 +1,6 @@
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import models.AI;
 import models.TicTacToe;
 
-import java.awt.*;
-import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -26,19 +19,8 @@ public class Main {
      */
     private static class Game {
 
-        /**
-         * @var char player Representing who's turn it is
-         */
         private char player;
-
-        /**
-         * @var TicTacToe tictactoe
-         */
         private TicTacToe ticTacToe;
-
-        /**
-         * @var AI comouter
-         */
         private AI computer;
 
         private boolean hasWinner = false;
@@ -82,7 +64,7 @@ public class Main {
             }
         }
 
-        public void checkWinner() {
+        private void checkWinner() {
             if(ticTacToe.checkForWinner(this.player)) {
                 System.out.println(this.player + " is the winner");
                 this.hasWinner = true;
