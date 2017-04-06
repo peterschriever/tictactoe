@@ -1,10 +1,30 @@
 package Controllers;
 
 import Framework.GUI.Base;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+
+import java.io.IOException;
 
 /**
- * Created by Ruben on 06-Apr-17.
+ * Class BaseController
+ *
+ * @author Ruben Buisman
+ * @version 0.1 (06-04-2017)
  */
 public class BaseController extends Base {
 
+    @Override
+    protected void loadPartialViews() throws IOException {
+        // Load MenuView.fxml
+        this.container.getChildren().add(FXMLLoader.load(this.getClass().getResource("/Framework/GUI/fxml/MenuView.fxml")));
+        // Load BoardView.fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Framework/GUI/fxml/BoardView.fxml"));
+        // Load ControllsView.fxml
+        // TODO: Load controllsview
+
+        fxmlLoader.setController(new BoardController());
+        Parent partial = fxmlLoader.load();
+        container.getChildren().add(partial);
+    }
 }

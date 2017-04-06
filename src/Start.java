@@ -25,7 +25,7 @@ public class Start implements GameStart {
 
     public Start(Stage stage, Scene scene) throws IOException {
 
-        // Scene meegegeven die weer wordt vervangen door updateGameScene method.
+        // Scene meegegeven die weer wordt vervangen door updateGameScene method. --> dus, is dit nodig?
         this.stage = stage;
         this.scene = scene;
         updateGameScene();
@@ -39,14 +39,15 @@ public class Start implements GameStart {
         Parent root = fxmlLoader.load();
 
         Scene gameScene = new Scene(root);
-        this.scene = gameScene; // update scene
-        this.stage.setScene(gameScene); // set scene in stage
+        this.scene = gameScene; // update scene --> is dit nodig?
+        this.stage.setScene(gameScene); // of getScene functie?
     }
 
 
     @Override
     public void start() {
         System.out.println("Real TTTGameStart.start was called!");
+
         // gui opstarten
         // - uitbreiding van framework gui (bord met 3*3 tiles) en extenden van BoardController
         // netwerkverbinding maken

@@ -11,7 +11,6 @@ import Framework.GUI.Board;
 public class BoardController extends Board {
 
     public BoardController() {
-
-
+        // Should be finished by someone else.
     }
 }
