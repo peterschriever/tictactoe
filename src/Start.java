@@ -1,9 +1,13 @@
+import Framework.GUI.Base;
 import Framework.GameStart;
 import Models.AI;
 import Models.TicTacToe;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 
@@ -12,18 +16,33 @@ import java.util.Scanner;
  * Part of the tictactoe project.
  */
 public class Start implements GameStart {
-    private final Scene scene;
+    private Scene scene;
     private final Stage stage;
 
-    public static void main(String[] args, Stage stage, Scene scene) {
+    public static void main(String[] args, Stage stage, Scene scene) throws IOException {
         new Start(stage, scene);
     }
 
-    public Start(Stage stage, Scene scene) {
+    public Start(Stage stage, Scene scene) throws IOException {
+
+        // Scene meegegeven die weer wordt vervangen door updateGameScene method.
         this.stage = stage;
         this.scene = scene;
+        updateGameScene();
         this.start();
     }
+
+    public void updateGameScene() throws IOException {
+        // Load view
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Framework/GUI/fxml/View.fxml"));
+        fxmlLoader.setController(new Base());
+        Parent root = fxmlLoader.load();
+
+        Scene gameScene = new Scene(root);
+        this.scene = gameScene; // update scene
+        this.stage.setScene(gameScene); // set scene in stage
+    }
+
 
     @Override
     public void start() {
