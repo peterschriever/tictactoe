@@ -1,3 +1,4 @@
+import Controllers.BaseController;
 import Framework.GUI.Base;
 import Framework.GameStart;
 import Models.AI;
@@ -18,6 +19,7 @@ import java.util.Scanner;
 public class Start implements GameStart {
     private Scene scene;
     private final Stage stage;
+    private final static BaseController baseController = new BaseController();
 
     public static void main(String[] args, Stage stage, Scene scene) throws IOException {
         new Start(stage, scene);
@@ -35,12 +37,12 @@ public class Start implements GameStart {
     public void updateGameScene() throws IOException {
         // Load view
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Framework/GUI/fxml/View.fxml"));
-        fxmlLoader.setController(new Base());
+        fxmlLoader.setController(getBaseController());
         Parent root = fxmlLoader.load();
 
         Scene gameScene = new Scene(root);
-        this.scene = gameScene; // update scene --> is dit nodig?
-        this.stage.setScene(gameScene); // of getScene functie?
+        this.scene = gameScene;
+        this.stage.setScene(gameScene);
     }
 
 
@@ -57,6 +59,10 @@ public class Start implements GameStart {
         // - start een game event
         // - doe een move event
         // - etc (basicly alles wat uit network responses kan)
+    }
+
+    public static BaseController getBaseController() {
+        return baseController;
     }
 
     /**

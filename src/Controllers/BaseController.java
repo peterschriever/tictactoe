@@ -1,6 +1,7 @@
 package Controllers;
 
 import Framework.GUI.Base;
+import Framework.GUI.Board;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
@@ -14,6 +15,8 @@ import java.io.IOException;
  */
 public class BaseController extends Base {
 
+    private Board boardController;
+
     @Override
     protected void loadPartialViews() throws IOException {
         // Load MenuView.fxml
@@ -23,7 +26,8 @@ public class BaseController extends Base {
         // Load ControllsView.fxml
         // TODO: Load controllsview
 
-        fxmlLoader.setController(new BoardController());
+        this.boardController = new BoardController();
+        fxmlLoader.setController(this.boardController);
         Parent partial = fxmlLoader.load();
         container.getChildren().add(partial);
     }
