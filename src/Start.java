@@ -41,9 +41,8 @@ public class Start implements GameStart {
 
         // Make connection with GameServer
         // @TODO: maybe place this in the initialize of the BaseController (make connection after GUI finished starting)
-        // @TODO: er zit een bug in de Config class
-        String host = "127.0.0.1"; //Config.get("networking", "host");
-        int port = 7789; //Integer.parseInt(Config.get("networking", "port"));
+        String host = Config.get("network", "host");
+        int port = Integer.parseInt(Config.get("network", "port"));
         conn = new Connection(host, port, networkEventHandler);
         conn.setupInputObserver();
 
