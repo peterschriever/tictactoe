@@ -1,9 +1,14 @@
-import Framework.GameStart;
+//import Framework.GameStart;
 import Models.AI;
 import Models.TicTacToe;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 
@@ -11,22 +16,27 @@ import java.util.Scanner;
  * Created by peterzen on 2017-03-23.
  * Part of the tictactoe project.
  */
-public class Start implements GameStart {
-    private final Scene scene;
-    private final Stage stage;
+public class Start extends Application {
+//    private final Scene scene;
+//    private final Stage stage;
 
-    public static void main(String[] args, Stage stage, Scene scene) {
-        new Start(stage, scene);
+    public static void main(String[] args) {
+        launch(args);
+
     }
 
-    public Start(Stage stage, Scene scene) {
-        this.stage = stage;
-        this.scene = scene;
-        this.start();
-    }
+//    public Start(Stage stage, Scene scene) {
+//        this.stage = stage;
+//        this.scene = scene;
+//        //this.start();
+//    }
 
     @Override
-    public void start() {
+    public void start(Stage primaryStage) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("Views/main.fxml"));
+        primaryStage.setTitle("Boggle");
+        primaryStage.setScene(new Scene(root, 918, 756));
+        primaryStage.show();
         System.out.println("Real TTTGameStart.start was called!");
         // gui opstarten
         // - uitbreiding van framework gui (bord met 3*3 tiles) en extenden van BoardController
@@ -37,6 +47,8 @@ public class Start implements GameStart {
         // - start een game event
         // - doe een move event
         // - etc (basicly alles wat uit network responses kan)
+
+
     }
 
     /**
