@@ -1,5 +1,4 @@
 import Controllers.BaseController;
-import Framework.GUI.Base;
 import Framework.GameStart;
 import Models.AI;
 import Models.TicTacToe;
