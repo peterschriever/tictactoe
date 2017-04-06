@@ -25,10 +25,13 @@ public class Start implements GameStart {
     private static final NetworkEvents networkEventHandler = new NetworkEventsController();
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        System.out.println(Config.get("network", "host"));
+
         main(null, null, null);
     }
 
     public static void main(String[] args, Stage stage, Scene scene) throws IOException, InterruptedException {
+        System.out.println(Config.get("network", "test"));
         new Start(stage, scene);
     }
 

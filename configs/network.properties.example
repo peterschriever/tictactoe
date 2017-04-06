@@ -1,0 +1,8 @@
+host=localhost
+port=7789
+
+# maximum number of requests to remember in our requestStack
+# going over this number activates code that removes the oldest Requests until the preferredStackSize is reached
+requestMaxStackSize=1000
+# preferred number of requests to remember in our requestStack
+requestPreferredStackSize=500
