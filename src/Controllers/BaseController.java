@@ -31,4 +31,8 @@ public class BaseController extends Base {
         Parent partial = fxmlLoader.load();
         container.getChildren().add(partial);
     }
+
+    public Board getBoardController() {
+        return boardController;
+    }
 }
