@@ -2,8 +2,10 @@ package Controllers;
 
 import Framework.GUI.Board;
 import Views.CustomLabel;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,6 +15,7 @@ import javafx.scene.image.ImageView;
  */
 public class BoardController extends Board {
     private static final int BOARDSIZE = 3;
+    private Label[] listOfLabels;
 
     // labels met on click
     // lijstje labels maken in de controller en die in het bordzetten en daar on click opzetten ipv id in fxml
@@ -26,6 +29,12 @@ public class BoardController extends Board {
 
     private void makeLabels() {
         // @TODO
+        // listOfLabels vullen
+        for (int i = 0; i < BOARDSIZE*BOARDSIZE; i++) {
+            Image image = new Image(getClass().getResourceAsStream("Empty.png"));
+            CustomLabel label = new CustomLabel();
+            label.setGraphic(new ImageView(image));
+        }
     }
 
     private void loadGrid() {
@@ -33,10 +42,10 @@ public class BoardController extends Board {
         int j;
         for (i = 0; i < BOARDSIZE; i++) {
             for (j = 0; j < BOARDSIZE; j++) {
-                // @TODO Hoe image toevoegen aan een label, want kennelijk pakt ie em niet..
-                Image image = new Image(getClass().getResourceAsStream("labels.jpg"));
-                ImageView imageView = new ImageView(image);
-                CustomLabel label = new CustomLabel(image);
+                // @TODO Waar plemp ik de images?
+                Image image = new Image(getClass().getResourceAsStream("Empty.png"));
+                CustomLabel label = new CustomLabel();
+                label.setGraphic(new ImageView(image));
                 label.setX(j);
                 label.setY(i);
                 gridPane.setHalignment(label, HPos.CENTER);
@@ -53,7 +62,7 @@ public class BoardController extends Board {
         int y = label.getY();
         // @TODO Waar haal ik turn vandaan?
         String turn = getTurn();
-        CustomLabel newLabel = makeLabel(turn);
+        CustomLabel newLabel = makeLabel(x, y, turn);
         // @TODO gaat remove goedkomen met de positie? gaat meestal op basis van de tekst van de label
         // die is er nu niet...
         gridPane.getChildren().remove(label);
@@ -61,23 +70,34 @@ public class BoardController extends Board {
     }
 
     // Move received from server
-    public void setMove(int x, int y, String speler) {
-        CustomLabel newLabel = makeLabel(speler);
+    public void setMove(int x, int y, String turn) {
+        CustomLabel newLabel = makeLabel(x, y, turn);
         // @TODO ouwe label nog ophalen
+        ObservableList<Node> childrens = gridPane.getChildren();
+        Node result;
+        for (Node node : childrens) {
+            if(gridPane.getRowIndex(node) == y && gridPane.getColumnIndex(node) == x) {
+                result = node;
+                break;
+            }
+        }
+
         gridPane.getChildren().remove(label);
         gridPane.add(newLabel, y, x);
     }
 
-    private CustomLabel makeLabel(String turn) {
+    private CustomLabel makeLabel(int x, int y, String turn) {
         CustomLabel newLabel = null;
         if (turn == "x") {
-            Image image = new Image(getClass().getResourceAsStream("labels.jpg"));
-            ImageView imageView = new ImageView(image);
-            newLabel = new CustomLabel(image);
+            Image image = new Image(getClass().getResourceAsStream("X.png"));
+            newLabel.setGraphic(new ImageView(image));
+            newLabel.setX(x);
+            newLabel.setY(y);
         } else {
-            Image image = new Image(getClass().getResourceAsStream("labels.jpg"));
-            ImageView imageView = new ImageView(image);
-            newLabel = new CustomLabel(image);
+            Image image = new Image(getClass().getResourceAsStream("O.png"));
+            newLabel.setGraphic(new ImageView(image));
+            newLabel.setX(x);
+            newLabel.setY(y);
         }
         return newLabel;
     }
