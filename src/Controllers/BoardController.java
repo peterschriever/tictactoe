@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 
@@ -24,40 +25,42 @@ public class BoardController extends Board {
         drawGrid(BOARDSIZE);
         loadGrid();
     }
-
-    private void makeLabels() {
-        // @TODO
-        // listOfLabels vullen
-        for (int i = 0; i < BOARDSIZE*BOARDSIZE; i++) {
-            Image image = new Image(getClass().getResourceAsStream("Empty.png"));
-            CustomLabel label = new CustomLabel();
-            label.setGraphic(new ImageView(image));
-        }
-    }
-
+    
     private void loadGrid() {
         int i;
         int j;
         for (i = 0; i < BOARDSIZE; i++) {
             for (j = 0; j < BOARDSIZE; j++) {
-                Image image = new Image(getClass().getResourceAsStream("Empty.png"));
+                Image image = new Image(BoardController.class.getClassLoader().getResourceAsStream("./Empty.png"));
+                ImageView imageView = new ImageView();
+                imageView.setFitHeight(50.0);
+                imageView.setFitWidth(50.0);
+                imageView.setImage(image);
                 CustomLabel label = new CustomLabel();
-                label.setGraphic(new ImageView(image));
-                label.setX(j);
-                label.setY(i);
+                label.setGraphic(imageView);
+                label.setX(i);
+                label.setY(j);
+                label.setOnMouseClicked(this::clickToDoMove);
                 gridPane.setHalignment(label, HPos.CENTER);
-                // gridPane.setGridLinesVisible(true);
+                // @TODO borders voor binnen lijnen
+                gridPane.setGridLinesVisible(true);
                 gridPane.add(label, j, i);
             }
         }
     }
 
     // Move received from within game
-    public void clickToDoMove(ActionEvent actionEvent) throws IOException {
-        CustomLabel label = (CustomLabel) actionEvent.getSource();
+    public void clickToDoMove(MouseEvent mouseEvent) {
+        CustomLabel label = (CustomLabel) mouseEvent.getSource();
         int x = label.getX();
         int y = label.getY();
-        String turn = Config.get("game", "useCharacterForPlayer");
+        System.out.println("x: " + x + " y:" + y);
+        String turn = null;
+        try {
+            turn = Config.get("game", "useCharacterForPlayer");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         CustomLabel newLabel = makeLabel(x, y, turn);
         // @TODO
         // gaat remove goedkomen met de positie? gaat meestal op basis van de tekst van de label
@@ -81,17 +84,24 @@ public class BoardController extends Board {
     }
 
     private CustomLabel makeLabel(int x, int y, String turn) {
-        CustomLabel newLabel = null;
-        if (turn == "X") {
-            Image image = new Image(getClass().getResourceAsStream("X.png"));
-            newLabel.setGraphic(new ImageView(image));
+        CustomLabel newLabel = new CustomLabel();
+        ImageView imageView = new ImageView();
+        imageView.setFitHeight(50.0);
+        imageView.setFitWidth(50.0);
+        if (turn.equals("X")) {
+            Image image = new Image(BoardController.class.getClassLoader().getResourceAsStream("./X.png"));
+            imageView.setImage(image);
+            newLabel.setGraphic(imageView);
             newLabel.setX(x);
             newLabel.setY(y);
+            gridPane.setHalignment(newLabel, HPos.CENTER);
         } else {
-            Image image = new Image(getClass().getResourceAsStream("O.png"));
-            newLabel.setGraphic(new ImageView(image));
+            Image image = new Image(BoardController.class.getClassLoader().getResourceAsStream("./O.png"));
+            imageView.setImage(image);
+            newLabel.setGraphic(imageView);
             newLabel.setX(x);
             newLabel.setY(y);
+            gridPane.setHalignment(newLabel, HPos.CENTER);
         }
         return newLabel;
     }
