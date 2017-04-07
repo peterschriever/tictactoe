@@ -16,6 +16,7 @@ import java.io.IOException;
 public class BaseController extends Base {
 
     private Board boardController;
+    private ControlsController controlsController;
 
     @Override
     protected void loadPartialViews() throws IOException {
@@ -31,6 +32,11 @@ public class BaseController extends Base {
         Parent partial = fxmlLoader.load();
         System.out.println("loading partials from BaseController!");
         container.getChildren().add(partial);
+
+        fxmlLoader = new FXMLLoader(getClass().getResource("/Views/controls.fxml"));
+        fxmlLoader.setController(new ControlsController());
+        Parent controls = fxmlLoader.load();
+        container.getChildren().add(controls);
     }
 
     public Board getBoardController() {

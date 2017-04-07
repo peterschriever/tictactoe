@@ -1,11 +1,9 @@
+import Controllers.BaseController;
 import Controllers.NetworkEventsController;
 import Framework.Config;
-import Controllers.BaseController;
 import Framework.GameStart;
 import Framework.Networking.Connection;
 import Framework.Networking.NetworkEvents;
-import Framework.Networking.Request.GetPlayerListRequest;
-import Framework.Networking.Request.Request;
 import Models.AI;
 import Models.TicTacToe;
 import javafx.application.Application;
@@ -16,6 +14,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Scanner;
+
+//import Framework.GameStart;
 
 
 /**
