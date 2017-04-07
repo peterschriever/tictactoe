@@ -1,5 +1,6 @@
 import Controllers.NetworkEventsController;
 import Framework.Config;
+import Controllers.BaseController;
 import Framework.GameStart;
 import Framework.Networking.Connection;
 import Framework.Networking.NetworkEvents;
@@ -7,6 +8,9 @@ import Framework.Networking.Request.GetPlayerListRequest;
 import Framework.Networking.Request.Request;
 import Models.AI;
 import Models.TicTacToe;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -18,51 +22,77 @@ import java.util.Scanner;
  * Created by peterzen on 2017-03-23.
  * Part of the tictactoe project.
  */
-public class Start implements GameStart {
-    private final Scene scene;
-    private final Stage stage;
+public class Start extends Application implements GameStart {
+    private Scene scene;
+    private Stage stage;
     private Connection conn;
     private static final NetworkEvents networkEventHandler = new NetworkEventsController();
+    private final static BaseController baseController = new BaseController();
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        main(null, null, null);
+        System.out.println(Config.get("network", "host"));
+        launch(args);
     }
 
     public static void main(String[] args, Stage stage, Scene scene) throws IOException, InterruptedException {
+        System.out.println(Config.get("network", "test"));
         new Start(stage, scene);
     }
 
-    public Start(Stage stage, Scene scene) throws IOException, InterruptedException {
+//    public Start(Stage stage, Scene scene) throws IOException, InterruptedException {
+//        this.stage = stage;
+//        this.scene = scene;
+//
+//        // Make connection with GameServer
+//        // @TODO: maybe place this in the initialize of the BaseController (make connection after GUI finished starting)
+//        String host = Config.get("network", "host");
+//        int port = Integer.parseInt(Config.get("network", "port"));
+//        conn = new Connection(host, port, networkEventHandler);
+//        conn.setupInputObserver();
+//
+//        Request playerList = new GetPlayerListRequest(conn);
+//        playerList.execute();
+//    }
+
+    public Start(Stage stage, Scene scene) throws IOException {
+        // Scene meegegeven die weer wordt vervangen door updateGameScene method. --> dus, is dit nodig?
         this.stage = stage;
         this.scene = scene;
-
-        // Make connection with GameServer
-        // @TODO: maybe place this in the initialize of the BaseController (make connection after GUI finished starting)
-        // @TODO: er zit een bug in de Config class
-        String host = "127.0.0.1"; //Config.get("networking", "host");
-        int port = 7789; //Integer.parseInt(Config.get("networking", "port"));
-        conn = new Connection(host, port, networkEventHandler);
-        conn.setupInputObserver();
-
-        Request playerList = new GetPlayerListRequest(conn);
-        playerList.execute();
-
+        updateGameScene();
+        if (!stage.isShowing()) {
+            stage.show();
+        }
         this.start();
+    }
+
+    public Start() {
+        // This constructor only exists to support stand-alone starting
+    }
+
+    public void updateGameScene() throws IOException {
+        // Load view
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Framework/GUI/fxml/View.fxml"));
+        fxmlLoader.setController(getBaseController());
+        Parent root = fxmlLoader.load();
+
+        Scene gameScene = new Scene(root);
+        this.scene = gameScene;
+        this.stage.setScene(gameScene);
+    }
+
+    public static BaseController getBaseController() {
+        return baseController;
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        // when being started standalone
+        new Start(stage, null);
     }
 
     @Override
     public void start() {
-        System.out.println("Real TTTGameStart.start was called!");
-        // gui opstarten
-        // - uitbreiding van framework gui (bord met 3*3 tiles) en extenden van BoardController
-
-        // netwerkverbinding maken
-        // inloggen / wachten op een game / inschrijven voor Tic-tac-toe
-        // vervolgens reageren op events:
-        // Maak NetworkEventsController (interface in framework toevoegen)
-        // - start een game event
-        // - doe een move event
-        // - etc (basicly alles wat uit network responses kan)
+        // when started from the framework
     }
 
     /**
