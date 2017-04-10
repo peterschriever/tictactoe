@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Border;
 
 import java.io.IOException;
 
@@ -103,5 +104,20 @@ public class BoardController extends Board {
             gridPane.setHalignment(newLabel, HPos.CENTER);
         }
         return newLabel;
+    }
+
+    public void endGameHandler() {
+        System.out.println("endGameHandler called!");
+        // gameLogic.setGameEnded();
+
+        // reset GUI styling
+        loadPreGameBoardState();
+
+    }
+
+    private void loadPreGameBoardState() {
+        gridPane.getChildren().removeAll();
+        loadGrid();
+        gridPane.setStyle("-fx-border-color: green; -fx-border-width:5;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;");
     }
 }

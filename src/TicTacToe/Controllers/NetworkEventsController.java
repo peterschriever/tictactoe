@@ -1,5 +1,8 @@
 package TicTacToe.Controllers;
 
+import Framework.Dialogs.AbstractDialog;
+import Framework.Dialogs.DialogInterface;
+import Framework.Dialogs.MessageDialog;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.*;
 import TicTacToe.Start;
@@ -22,7 +25,22 @@ public class NetworkEventsController implements NetworkEvents {
 
     @Override
     public void gameEnded(GameEndResponse gameEndResponse) {
+        // show GameEndedDialog
+        String result = gameEndResponse.getResult();
+        DialogInterface gameEndedDialog = new MessageDialog(
+                "Game has ended!",
+                "Game resulted in a " + result + "!",
+                "Comment: " + gameEndResponse.getComment() + "\n"
+                + "Player one score: " + gameEndResponse.getPlayerOneScore() + "\n"
+                + "Player two score: " + gameEndResponse.getPlayerTwoScore()
+        );
+        gameEndedDialog.display();
 
+        // update game-logic models (via BoardController?)
+        // update BoardView look (via BoardController)
+        Start.getBaseController().getBoardController().endGameHandler();
+
+        // GameEndedDialog callback -> reset GUI (enable ControlsController buttons en reset game-logic models)
     }
 
     @Override
