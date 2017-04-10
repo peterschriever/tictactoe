@@ -42,11 +42,13 @@ public class BoardController extends Board {
                 label.setY(j);
                 label.setOnMouseClicked(this::clickToDoMove);
                 gridPane.setHalignment(label, HPos.CENTER);
-                // @TODO borders voor binnen lijnen
-                gridPane.setGridLinesVisible(true);
+                label.setMinSize(gridPane.getPrefWidth() / BOARDSIZE, gridPane.getPrefHeight() / BOARDSIZE);
+                label.setStyle("-fx-border-color: orange; -fx-border-width:1;");
                 gridPane.add(label, j, i);
             }
         }
+//        gridPane.setGridLinesVisible(true);
+        gridPane.setStyle("-fx-border-color: orange;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;");
     }
 
     // Move received from within game
@@ -111,6 +113,10 @@ public class BoardController extends Board {
 
         gridPane.getChildren().removeAll();
         loadGrid();
-        gridPane.setStyle("-fx-border-color: yellow; -fx-border-width:5;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;");
+        gridPane.setStyle("-fx-border-color: yellow;");
+    }
+
+    public void setOurTurn() {
+        gridPane.setStyle("-fx-border-color: green;");
     }
 }
