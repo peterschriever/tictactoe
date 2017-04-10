@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Border;
 
 import java.io.IOException;
 
@@ -21,11 +20,19 @@ public class BoardController extends Board {
     private static final int BOARDSIZE = 3;
     private Label[] listOfLabels;
 
+    private static final String gridCellStyle = "-fx-border-color: black; -fx-border-width:1;";
+    private static final String preGameGridStyle = "-fx-border-color: orange;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
+    private static final String ourTurnGridStyle = "-fx-border-color: green;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
+    private static double cellWidth;
+    private static double cellHeight;
+
     public void initialize() {
+        cellWidth = (gridPane.getPrefWidth() / BOARDSIZE) - 2;
+        cellHeight = (gridPane.getPrefWidth() / BOARDSIZE) - 2;
         drawGrid(BOARDSIZE);
         loadGrid();
     }
-    
+
     private void loadGrid() {
         int i;
         int j;
@@ -42,13 +49,12 @@ public class BoardController extends Board {
                 label.setY(j);
                 label.setOnMouseClicked(this::clickToDoMove);
                 gridPane.setHalignment(label, HPos.CENTER);
-                label.setMinSize(gridPane.getPrefWidth() / BOARDSIZE, gridPane.getPrefHeight() / BOARDSIZE);
-                label.setStyle("-fx-border-color: orange; -fx-border-width:1;");
+                label.setMinSize(cellWidth, cellHeight);
+                label.setStyle(gridCellStyle);
                 gridPane.add(label, j, i);
             }
         }
-//        gridPane.setGridLinesVisible(true);
-        gridPane.setStyle("-fx-border-color: orange;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;");
+        gridPane.setStyle(preGameGridStyle);
     }
 
     // Move received from within game
@@ -77,7 +83,7 @@ public class BoardController extends Board {
         ObservableList<Node> childrenList = gridPane.getChildren();
         Node result;
         for (Node node : childrenList) {
-            if(gridPane.getRowIndex(node) == y && gridPane.getColumnIndex(node) == x) {
+            if (gridPane.getRowIndex(node) == y && gridPane.getColumnIndex(node) == x) {
                 gridPane.getChildren().remove(node);
                 break;
             }
@@ -113,10 +119,10 @@ public class BoardController extends Board {
 
         gridPane.getChildren().removeAll();
         loadGrid();
-        gridPane.setStyle("-fx-border-color: yellow;");
+        gridPane.setStyle(preGameGridStyle);
     }
 
     public void setOurTurn() {
-        gridPane.setStyle("-fx-border-color: green;");
+        gridPane.setStyle(ourTurnGridStyle);
     }
 }
