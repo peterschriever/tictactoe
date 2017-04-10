@@ -1,6 +1,8 @@
 package TicTacToe.Controllers;
 
 import Framework.Config;
+import Framework.Dialogs.DialogInterface;
+import Framework.Dialogs.ErrorDialog;
 import Framework.GUI.Board;
 import TicTacToe.Views.CustomLabel;
 import javafx.collections.ObservableList;
@@ -21,6 +23,7 @@ public class BoardController extends Board {
     private Label[] listOfLabels;
 
     private static final String gridCellStyle = "-fx-border-color: black; -fx-border-width:1;";
+    private static final String cellTakenStyle = "-fx-border-color: red; -fx-border-width:1;";
     private static final String preGameGridStyle = "-fx-border-color: orange;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
     private static final String ourTurnGridStyle = "-fx-border-color: green;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
     private static double cellWidth;
@@ -40,17 +43,17 @@ public class BoardController extends Board {
             for (j = 0; j < BOARDSIZE; j++) {
                 Image image = new Image(BoardController.class.getClassLoader().getResourceAsStream("./Empty.png"));
                 ImageView imageView = new ImageView();
-                imageView.setFitHeight(50.0);
-                imageView.setFitWidth(50.0);
+                imageView.setFitHeight(cellHeight - 5);
+                imageView.setFitWidth(cellWidth - 5);
                 imageView.setImage(image);
                 CustomLabel label = new CustomLabel();
-                label.setGraphic(imageView);
+                label.setPrefSize(cellWidth, cellHeight);
                 label.setX(i);
                 label.setY(j);
                 label.setOnMouseClicked(this::clickToDoMove);
                 gridPane.setHalignment(label, HPos.CENTER);
-                label.setMinSize(cellWidth, cellHeight);
                 label.setStyle(gridCellStyle);
+                label.setGraphic(imageView);
                 gridPane.add(label, j, i);
             }
         }
@@ -63,11 +66,14 @@ public class BoardController extends Board {
         int x = label.getX();
         int y = label.getY();
         System.out.println("x: " + x + " y:" + y);
-        String turn = null;
+        String turn = " ";
         try {
             turn = Config.get("game", "useCharacterForPlayer");
+            turn = turn != null ? turn : " ";
         } catch (IOException e) {
-            e.printStackTrace();
+            DialogInterface errorDialog = new ErrorDialog("Config error", "Could not load property: useCharacterForPlayer." +
+                    "\nPlease check your game.properties file.");
+            errorDialog.display();
         }
         CustomLabel newLabel = makeLabel(x, y, turn);
         // @TODO
@@ -96,6 +102,7 @@ public class BoardController extends Board {
         ImageView imageView = new ImageView();
         imageView.setFitHeight(50.0);
         imageView.setFitWidth(50.0);
+        newLabel.setStyle(cellTakenStyle);
         if (turn.equals("X")) {
             Image image = new Image(BoardController.class.getClassLoader().getResourceAsStream("./X.png"));
             imageView.setImage(image);
@@ -124,5 +131,6 @@ public class BoardController extends Board {
 
     public void setOurTurn() {
         gridPane.setStyle(ourTurnGridStyle);
+
     }
 }
