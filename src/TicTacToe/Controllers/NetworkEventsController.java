@@ -1,8 +1,7 @@
 package TicTacToe.Controllers;
 
 import Framework.Networking.NetworkEvents;
-import Framework.Networking.Response.PlayerListResponse;
-import Framework.Networking.Response.Response;
+import Framework.Networking.Response.*;
 import TicTacToe.Start;
 
 /**
@@ -10,49 +9,49 @@ import TicTacToe.Start;
  * Part of the tictactoe project.
  */
 public class NetworkEventsController implements NetworkEvents {
+
     @Override
-    public void challengeCancelled(Response response) {
-        System.out.println("challengeCancelled event called!");
+    public void challengeCancelled(ChallengeCancelledResponse challengeCancelledResponse) {
+
     }
 
     @Override
-    public void challengeReceived(Response response) {
-        System.out.println("challengeReceived event called!");
+    public void challengeReceived(ChallengeReceivedResponse challengeReceivedResponse) {
+
     }
 
     @Override
-    public void gameEnded(Response response) {
-        System.out.println("gameEnded event called!");
+    public void gameEnded(GameEndResponse gameEndResponse) {
+
     }
 
     @Override
-    public void gameListReceived(Response response) {
-        System.out.println("gameListReceived event called!");
+    public void gameListReceived(GameListResponse gameListResponse) {
+
     }
 
     @Override
-    public void matchReceived(Response response) {
-        System.out.println("matchReceived event called!");
+    public void matchReceived(MatchReceivedResponse matchReceivedResponse) {
+
     }
 
     @Override
-    public void moveReceived(Response response) {
-        System.out.println("moveReceived event called!");
+    public void moveReceived(MoveResponse moveResponse) {
+
     }
 
     @Override
-    public void ourTurn(Response response) {
-        System.out.println("ourTurn event called!");
+    public void ourTurn(OurTurnResponse ourTurnResponse) {
+
     }
 
     @Override
-    public void playerListReceived(Response response) {
-        System.out.println("playerListReceived event called!");
-        System.out.println("Hello world from the NetworkEventsController!");
+    public void playerListReceived(PlayerListResponse playerListResponse) {
+
     }
 
     @Override
-    public void errorReceived(Response response) {
-        System.out.println("errorReceived event called!");
+    public void errorReceived(ErrorResponse errorResponse) {
+
     }
 }
