@@ -106,16 +106,9 @@ public class BoardController extends Board {
         return newLabel;
     }
 
-    public void endGameHandler() {
-        System.out.println("endGameHandler called!");
-        // gameLogic.setGameEnded();
+    public void loadPreGameBoardState() {
+        // gameLogic = null; || gameLogic = new Game();
 
-        // reset GUI styling
-        loadPreGameBoardState();
-
-    }
-
-    private void loadPreGameBoardState() {
         gridPane.getChildren().removeAll();
         loadGrid();
         gridPane.setStyle("-fx-border-color: yellow; -fx-border-width:5;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;");

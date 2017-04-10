@@ -35,11 +35,11 @@ public class NetworkEventsController implements NetworkEvents {
                 + "Player one score: " + gameEndResponse.getPlayerOneScore() + "\n"
                 + "Player two score: " + gameEndResponse.getPlayerTwoScore()
         );
-        gameEndedDialog.display();
+        Platform.runLater(gameEndedDialog::display);
 
-        // reset / update game-logic models (via BoardController?)
+        // reset / update game-logic models (via BoardController)
         // reset / update BoardView look (via BoardController)
-        Start.getBaseController().getBoardController().endGameHandler();
+        Start.getBaseController().getBoardController().loadPreGameBoardState();
 
         // reset GUI (enable ControlsController buttons)
         Start.getBaseController().getControlsController().enableControls();
