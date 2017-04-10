@@ -1,4 +1,4 @@
-package Controllers;
+package TicTacToe.Controllers;
 
 import Framework.GUI.Base;
 import Framework.GUI.Board;
@@ -33,13 +33,18 @@ public class BaseController extends Base {
         System.out.println("loading partials from BaseController!");
         container.getChildren().add(partial);
 
-        fxmlLoader = new FXMLLoader(getClass().getResource("/Views/controls.fxml"));
-        fxmlLoader.setController(new ControlsController());
+        this.controlsController = new ControlsController();
+        fxmlLoader = new FXMLLoader(getClass().getResource("/TicTacToe/Views/controls.fxml"));
+        fxmlLoader.setController(this.controlsController);
         Parent controls = fxmlLoader.load();
         container.getChildren().add(controls);
     }
 
     public Board getBoardController() {
         return boardController;
+    }
+
+    public ControlsController getControlsController() {
+        return this.controlsController;
     }
 }

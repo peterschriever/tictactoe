@@ -1,4 +1,4 @@
-package Models;
+package TicTacToe.Models;
 
 /**
  * Created by Eran on 27-3-2017.

@@ -1,26 +1,17 @@
-package Controllers;
+package TicTacToe.Controllers;
 
-import Framework.Config;
 import Framework.Dialogs.ErrorDialog;
-import Framework.GUI.Base;
 import Framework.Networking.Connection;
 import Framework.Networking.Request.ChallengeRequest;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
-import javafx.scene.layout.Pane;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -32,9 +23,10 @@ public class ControlsController implements Initializable {
     /**
      * @var ListView The list with possible players
      */
-    @FXML ListView<String> playerList;
+    @FXML static ListView<String> playerList;
 
     @FXML Button challengePlayer;
+    @FXML Button challengeComputer;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -42,6 +34,16 @@ public class ControlsController implements Initializable {
 
         this.initPlayerChallenging();
 
+        this.initComputerChallenging();
+
+    }
+
+    private void initComputerChallenging() {
+        challengeComputer.setOnAction(e -> this.challengeComputer());
+    }
+
+    private void challengeComputer() {
+        System.out.println("Computer challenged");
     }
 
     private void initPlayerChallenging() {
@@ -78,7 +80,7 @@ public class ControlsController implements Initializable {
 
     public void updatePlayerList(List<String> playerList) {
         ObservableList<String> list = FXCollections.observableArrayList(playerList);
-        this.playerList.setItems(list);
+        playerList.setItems(list);
     }
 
 

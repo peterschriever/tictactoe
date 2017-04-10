@@ -1,7 +1,9 @@
-package Controllers;
+package TicTacToe.Controllers;
 
 import Framework.Networking.NetworkEvents;
+import Framework.Networking.Response.PlayerListResponse;
 import Framework.Networking.Response.Response;
+import TicTacToe.Start;
 
 /**
  * Created by peterzen on 2017-04-06.

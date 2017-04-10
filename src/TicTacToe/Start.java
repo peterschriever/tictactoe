@@ -1,11 +1,13 @@
-import Controllers.BaseController;
-import Controllers.NetworkEventsController;
+package TicTacToe;
+
+import TicTacToe.Controllers.BaseController;
+import TicTacToe.Controllers.NetworkEventsController;
 import Framework.Config;
 import Framework.GameStart;
 import Framework.Networking.Connection;
 import Framework.Networking.NetworkEvents;
-import Models.AI;
-import Models.TicTacToe;
+import TicTacToe.Models.AI;
+import TicTacToe.Models.TicTacToe;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,8 +16,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Scanner;
-
-//import Framework.GameStart;
 
 
 /**
