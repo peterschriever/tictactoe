@@ -1,4 +1,4 @@
-package Controllers;
+package TicTacToe.Controllers;
 
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.Response;
@@ -16,11 +16,6 @@ public class NetworkEventsController implements NetworkEvents {
     @Override
     public void challengeReceived(Response response) {
         System.out.println("challengeReceived event called!");
-    }
-
-    @Override
-    public void ErrorReceived(Response response) {
-        System.out.println("ErrorReceived event called!");
     }
 
     @Override

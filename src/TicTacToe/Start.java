@@ -1,11 +1,13 @@
-import Controllers.BaseController;
-import Controllers.NetworkEventsController;
+package TicTacToe;
+
+import TicTacToe.Controllers.BaseController;
+import TicTacToe.Controllers.NetworkEventsController;
 import Framework.Config;
 import Framework.GameStart;
 import Framework.Networking.Connection;
 import Framework.Networking.NetworkEvents;
-import Models.AI;
-import Models.TicTacToe;
+import TicTacToe.Models.AI;
+import TicTacToe.Models.TicTacToe;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,7 +27,7 @@ import java.util.Scanner;
 public class Start extends Application implements GameStart {
     private Scene scene;
     private Stage stage;
-    private Connection conn;
+    private static Connection conn;
     private static final NetworkEvents networkEventHandler = new NetworkEventsController();
     private final static BaseController baseController = new BaseController();
 
@@ -39,7 +41,7 @@ public class Start extends Application implements GameStart {
         new Start(stage, scene);
     }
 
-//    public Start(Stage stage, Scene scene) throws IOException, InterruptedException {
+//    public TicTacToe.Start(Stage stage, Scene scene) throws IOException, InterruptedException {
 //        this.stage = stage;
 //        this.scene = scene;
 //
@@ -58,10 +60,16 @@ public class Start extends Application implements GameStart {
         // Scene meegegeven die weer wordt vervangen door updateGameScene method. --> dus, is dit nodig?
         this.stage = stage;
         this.scene = scene;
-        updateGameScene();
+        // setup and save the connection
+        String host = Config.get("network", "host");
+        int port = Integer.parseInt(Config.get("network", "port"));
+        conn = new Connection(host, port, networkEventHandler);
         if (!stage.isShowing()) {
             stage.show();
         }
+
+        // update and show the GUI
+        updateGameScene();
         this.start();
     }
 
@@ -92,7 +100,11 @@ public class Start extends Application implements GameStart {
 
     @Override
     public void start() {
-        // when started from the framework
+        // when started from either the framework or standalone
+    }
+
+    public static Connection getConn() {
+        return conn;
     }
 
     /**

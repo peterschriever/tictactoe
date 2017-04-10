@@ -1,26 +1,17 @@
-package Controllers;
+package TicTacToe.Controllers;
 
-import Framework.Config;
 import Framework.Dialogs.ErrorDialog;
-import Framework.GUI.Base;
 import Framework.Networking.Connection;
 import Framework.Networking.Request.ChallengeRequest;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
-import javafx.scene.layout.Pane;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
