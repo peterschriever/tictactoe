@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,8 +26,9 @@ public class BoardController extends Board {
     public void initialize() {
         drawGrid(BOARDSIZE);
         loadGrid();
+        System.out.println("init?");
     }
-    
+
     private void loadGrid() {
         int i;
         int j;
@@ -44,7 +46,7 @@ public class BoardController extends Board {
                 label.setOnMouseClicked(this::clickToDoMove);
                 gridPane.setHalignment(label, HPos.CENTER);
                 // @TODO borders voor binnen lijnen
-                gridPane.setGridLinesVisible(true);
+                // gridPane.setGridLinesVisible(true);
                 gridPane.add(label, j, i);
             }
         }
@@ -67,20 +69,21 @@ public class BoardController extends Board {
     }
 
     // Move received from server
-    public void setMove(int x, int y, String turn) {
-        CustomLabel newLabel = makeLabel(x, y, turn);
+    public void setMove(int x, int y, String player) {
+        CustomLabel newLabel = makeLabel(x, y, player);
         ObservableList<Node> childrenList = gridPane.getChildren();
-        Node result;
         for (Node node : childrenList) {
-            if(gridPane.getRowIndex(node) == y && gridPane.getColumnIndex(node) == x) {
+            System.out.println(GridPane.getRowIndex(node));
+            if (GridPane.getRowIndex(node) == y && GridPane.getColumnIndex(node) == x) {
                 gridPane.getChildren().remove(node);
                 break;
             }
         }
-        // @TODO view updaten
-        // TicTacToe.doTurn();
-        // TicTacToe.getBoard();
-        // gridPane updaten met board
+        // model updaten
+        gridPane.setGridLinesVisible(true);
+        char turn = player.charAt(0);
+        ttt.doTurn(y, x, turn);
+        // gridPane updaten with move
         gridPane.add(newLabel, y, x);
     }
 

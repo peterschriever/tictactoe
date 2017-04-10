@@ -1,7 +1,13 @@
 package TicTacToe.Controllers;
 
+import Framework.Config;
+import Framework.Dialogs.ErrorDialog;
+import Framework.Dialogs.UserNameDialog;
 import Framework.GUI.Base;
 import Framework.GUI.Board;
+import Framework.Networking.Request.LoginRequest;
+import Framework.Networking.Request.Request;
+import TicTacToe.Start;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
@@ -17,6 +23,39 @@ public class BaseController extends Base {
 
     private BoardController boardController;
     private ControlsController controlsController;
+
+    @Override
+    public void initialize() {
+        super.initialize();
+        // setup Connection response observer
+        Start.getConn().setupInputObserver();
+        attemptPlayerLogin();
+    }
+
+    private void attemptPlayerLogin() {
+        Request loginRequest;
+        ErrorDialog errorDialog;
+
+        try {
+            String playerName = Config.get("game", "playerName");
+            if (playerName != null) {
+                loginRequest = new LoginRequest(Start.getConn(), playerName);
+                loginRequest.execute();
+                System.out.println("Send login request for playerName: " + playerName);
+                return;
+            }
+        } catch (IOException e) {
+            errorDialog = new ErrorDialog("IOException: could not load from game.properties", "Please contact a project developer.");
+            errorDialog.display();
+        } catch (InterruptedException e) {
+            errorDialog = new ErrorDialog("InterruptedException: could not send game server Request", "Please contact a project developer.");
+            errorDialog.display();
+        }
+
+        // Config was null or failed: show UsernameDialog
+        UserNameDialog loginDialog = new UserNameDialog();
+        loginDialog.display();
+    }
 
     @Override
     protected void loadPartialViews() throws IOException {

@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,10 +24,11 @@ public class ControlsController implements Initializable {
     /**
      * @var ListView The list with possible players
      */
-    @FXML static ListView<String> playerList;
+    @FXML ListView<String> playerList;
 
     @FXML Button challengePlayer;
     @FXML Button challengeComputer;
+    @FXML HBox controlsBox;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -80,7 +82,22 @@ public class ControlsController implements Initializable {
 
     public void updatePlayerList(List<String> playerList) {
         ObservableList<String> list = FXCollections.observableArrayList(playerList);
-        playerList.setItems(list);
+        this.playerList.setItems(list);
+    }
+
+    /**
+     * Disable all the controls
+     */
+    public void disableControls() {
+        if(!controlsBox.isDisable()) {
+            controlsBox.setDisable(true);
+        }
+    }
+
+    public void enableControls() {
+        if(controlsBox.isDisable()) {
+            controlsBox.setDisable(false);
+        }
     }
 
 

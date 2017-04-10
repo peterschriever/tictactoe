@@ -1,13 +1,8 @@
 package TicTacToe.Controllers;
 
-import Framework.GUI.Board;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.*;
 import TicTacToe.Start;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by peterzen on 2017-04-06.
@@ -49,7 +44,6 @@ public class NetworkEventsController implements NetworkEvents {
 
         int x = coordinates[0];
         int y = coordinates[1];
-
         // update view via BoardController
         boardController.setMove(x, y, player);
     }
@@ -68,5 +62,7 @@ public class NetworkEventsController implements NetworkEvents {
     @Override
     public void errorReceived(ErrorResponse response) {
         System.out.println("errorReceived event called!");
+
+
     }
 }
