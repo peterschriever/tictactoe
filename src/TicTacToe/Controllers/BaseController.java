@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 public class BaseController extends Base {
 
-    private Board boardController;
+    private BoardController boardController;
     private ControlsController controlsController;
 
     @Override
@@ -40,7 +40,7 @@ public class BaseController extends Base {
         container.getChildren().add(controls);
     }
 
-    public Board getBoardController() {
+    public BoardController getBoardController() {
         return boardController;
     }
 

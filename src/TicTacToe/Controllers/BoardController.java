@@ -75,6 +75,8 @@ public class BoardController extends Board {
                 break;
             }
         }
+        TicTacToe.doTurn();
+        TicTacToe.getBoard();
         gridPane.add(newLabel, y, x);
     }
 
