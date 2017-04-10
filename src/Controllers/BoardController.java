@@ -4,22 +4,21 @@ import Framework.Config;
 import Framework.GUI.Board;
 import Views.CustomLabel;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by femkeh on 06/04/17.
  */
 public class BoardController extends Board {
     private static final int BOARDSIZE = 3;
-    private Label[] listOfLabels;
 
     public void initialize() {
         drawGrid(BOARDSIZE);
@@ -54,7 +53,6 @@ public class BoardController extends Board {
         CustomLabel label = (CustomLabel) mouseEvent.getSource();
         int x = label.getX();
         int y = label.getY();
-        System.out.println("x: " + x + " y:" + y);
         String turn = null;
         try {
             turn = Config.get("game", "useCharacterForPlayer");
@@ -62,9 +60,6 @@ public class BoardController extends Board {
             e.printStackTrace();
         }
         CustomLabel newLabel = makeLabel(x, y, turn);
-        // @TODO
-        // gaat remove goedkomen met de positie? gaat meestal op basis van de tekst van de label
-        // die is er nu niet...
         gridPane.getChildren().remove(label);
         gridPane.add(newLabel, y, x);
     }
@@ -104,5 +99,21 @@ public class BoardController extends Board {
             gridPane.setHalignment(newLabel, HPos.CENTER);
         }
         return newLabel;
+    }
+
+    // List of coordinates
+    public Map<Integer, int[]> getListOfCoordinates() {
+        Map<Integer, int[]> listOfCoordinates = new HashMap<>();
+        int key = 0;
+        int[] values = new int[2];
+        for (int i = 0; i < BOARDSIZE; i++) {
+            for (int j = 0; j < BOARDSIZE; j++) {
+                key = i * BOARDSIZE + j;
+                values[0] = i;
+                values[1] = j;
+                listOfCoordinates.put(key, values);
+            }
+        }
+        return listOfCoordinates;
     }
 }
