@@ -1,8 +1,8 @@
-package Controllers;
+package TicTacToe.Controllers;
 
 import Framework.Config;
 import Framework.GUI.Board;
-import Views.CustomLabel;
+import TicTacToe.Views.CustomLabel;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.scene.Node;

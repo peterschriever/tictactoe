@@ -1,4 +1,4 @@
-package Models;
+package TicTacToe.Models;
 
 import java.util.Arrays;
 import java.util.HashMap;
