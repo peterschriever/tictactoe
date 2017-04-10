@@ -28,11 +28,6 @@ public class NetworkEventsController implements NetworkEvents {
     }
 
     @Override
-    public void ErrorReceived(Response response) {
-        System.out.println("ErrorReceived event called!");
-    }
-
-    @Override
     public void gameEnded(Response response) {
         System.out.println("gameEnded event called!");
     }
