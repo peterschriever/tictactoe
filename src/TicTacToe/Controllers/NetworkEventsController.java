@@ -1,11 +1,12 @@
 package TicTacToe.Controllers;
 
-import Framework.Dialogs.AbstractDialog;
 import Framework.Dialogs.DialogInterface;
+import Framework.Dialogs.ErrorDialog;
 import Framework.Dialogs.MessageDialog;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.*;
 import TicTacToe.Start;
+import javafx.application.Platform;
 
 /**
  * Created by peterzen on 2017-04-06.
@@ -36,11 +37,12 @@ public class NetworkEventsController implements NetworkEvents {
         );
         gameEndedDialog.display();
 
-        // update game-logic models (via BoardController?)
-        // update BoardView look (via BoardController)
+        // reset / update game-logic models (via BoardController?)
+        // reset / update BoardView look (via BoardController)
         Start.getBaseController().getBoardController().endGameHandler();
 
-        // GameEndedDialog callback -> reset GUI (enable ControlsController buttons en reset game-logic models)
+        // reset GUI (enable ControlsController buttons)
+        Start.getBaseController().getControlsController().enableControls();
     }
 
     @Override
@@ -70,6 +72,7 @@ public class NetworkEventsController implements NetworkEvents {
 
     @Override
     public void errorReceived(ErrorResponse errorResponse) {
-
+        DialogInterface errorDialog = new ErrorDialog("Network error occurred", "Possible cause: " + errorResponse.getRequest().toString());
+        Platform.runLater(errorDialog::display);
     }
 }

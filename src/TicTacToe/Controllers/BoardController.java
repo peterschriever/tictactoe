@@ -118,6 +118,6 @@ public class BoardController extends Board {
     private void loadPreGameBoardState() {
         gridPane.getChildren().removeAll();
         loadGrid();
-        gridPane.setStyle("-fx-border-color: green; -fx-border-width:5;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;");
+        gridPane.setStyle("-fx-border-color: yellow; -fx-border-width:5;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;");
     }
 }
