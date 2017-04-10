@@ -2,6 +2,7 @@ package TicTacToe.Controllers;
 
 import Framework.Config;
 import Framework.GUI.Board;
+import TicTacToe.Models.TicTacToe;
 import TicTacToe.Views.CustomLabel;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -19,6 +20,7 @@ import java.util.Map;
  */
 public class BoardController extends Board {
     private static final int BOARDSIZE = 3;
+    private static TicTacToe ttt = new TicTacToe();
 
     public void initialize() {
         drawGrid(BOARDSIZE);
@@ -75,8 +77,10 @@ public class BoardController extends Board {
                 break;
             }
         }
-        TicTacToe.doTurn();
-        TicTacToe.getBoard();
+        // @TODO view updaten
+        // TicTacToe.doTurn();
+        // TicTacToe.getBoard();
+        // gridPane updaten met board
         gridPane.add(newLabel, y, x);
     }
 
