@@ -10,6 +10,8 @@ import TicTacToe.Start;
 import javafx.application.Platform;
 import TicTacToe.Models.TicTacToe;
 
+
+
 /**
  * Created by peterzen on 2017-04-06.
  * Part of the tictactoe project.
@@ -59,6 +61,9 @@ public class NetworkEventsController implements NetworkEvents {
         //Set the board
         Start.getBaseController().getBoardController().loadPreGameBoardState();
         Start.getBaseController().getBoardController().ttt = new TicTacToe();
+
+        //Disable the controls
+        Start.getBaseController().getControlsController().disableControls();
     }
 
     @Override
