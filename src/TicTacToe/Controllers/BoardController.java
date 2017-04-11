@@ -1,6 +1,8 @@
 package TicTacToe.Controllers;
 
 import Framework.Config;
+import Framework.Dialogs.DialogInterface;
+import Framework.Dialogs.ErrorDialog;
 import Framework.GUI.Board;
 import TicTacToe.Models.TicTacToe;
 import TicTacToe.Views.CustomLabel;
@@ -23,13 +25,25 @@ import java.util.Map;
  */
 public class BoardController extends Board {
     private static final int BOARDSIZE = 3;
+    private static TicTacToe ttt = new TicTacToe();
     private Label[] listOfLabels;
+    private boolean isOurTurn = false;
+
+    private static final String gridCellStyle = "-fx-border-color: black; -fx-border-width:1;";
+    private static final String cellTakenStyle = "-fx-border-color: red; -fx-border-width:1;";
+    private static final String preGameGridStyle = "-fx-border-color: orange;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
+    private static final String ourTurnGridStyle = "-fx-border-color: green;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
+    private static final String theirTurnGridStyle = "-fx-border-color: red;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
+    private static double cellWidth;
+    private static double cellHeight;
 
     public void initialize() {
+        cellWidth = (gridPane.getPrefWidth() / BOARDSIZE) - 2;
+        cellHeight = (gridPane.getPrefWidth() / BOARDSIZE) - 2;
         drawGrid(BOARDSIZE);
         loadGrid();
     }
-    
+
     private void loadGrid() {
         int i;
         int j;
@@ -37,49 +51,66 @@ public class BoardController extends Board {
             for (j = 0; j < BOARDSIZE; j++) {
                 Image image = new Image(BoardController.class.getClassLoader().getResourceAsStream("./Empty.png"));
                 ImageView imageView = new ImageView();
-                imageView.setFitHeight(50.0);
-                imageView.setFitWidth(50.0);
+                imageView.setFitHeight(cellHeight - 5);
+                imageView.setFitWidth(cellWidth - 5);
                 imageView.setImage(image);
                 CustomLabel label = new CustomLabel();
-                label.setGraphic(imageView);
+                label.setPrefSize(cellWidth, cellHeight);
                 label.setX(i);
                 label.setY(j);
                 label.setOnMouseClicked(this::clickToDoMove);
                 gridPane.setHalignment(label, HPos.CENTER);
-                // @TODO borders voor binnen lijnen
-                gridPane.setGridLinesVisible(true);
+                label.setStyle(gridCellStyle);
+                label.setGraphic(imageView);
                 gridPane.add(label, j, i);
             }
         }
+        gridPane.setStyle(preGameGridStyle);
     }
 
     // Move received from within game
     public void clickToDoMove(MouseEvent mouseEvent) {
+        if (!isOurTurn) {
+            DialogInterface errDialog = new ErrorDialog("Not your turn!", "Please wait until the borders are green");
+            errDialog.display();
+            return;
+        }
+
         CustomLabel label = (CustomLabel) mouseEvent.getSource();
         int x = label.getX();
         int y = label.getY();
-        String turn = null;
+        String turn = " ";
         try {
             turn = Config.get("game", "useCharacterForPlayer");
+            turn = turn != null ? turn : " ";
         } catch (IOException e) {
-            e.printStackTrace();
+            DialogInterface errorDialog = new ErrorDialog("Config error", "Could not load property: useCharacterForPlayer." +
+                    "\nPlease check your game.properties file.");
+            errorDialog.display();
         }
         CustomLabel newLabel = makeLabel(x, y, turn);
         gridPane.getChildren().remove(label);
         gridPane.add(newLabel, y, x);
+
+        // @TODO: stuur MoveRequest naar server
+        isOurTurn = false;
+        gridPane.setStyle(theirTurnGridStyle);
     }
 
     // Move received from server
-    public void setMove(int x, int y, String turn) {
-        CustomLabel newLabel = makeLabel(x, y, turn);
+    public void setMove(int x, int y, String player) {
+        CustomLabel newLabel = makeLabel(x, y, player);
         ObservableList<Node> childrenList = gridPane.getChildren();
-        Node result;
         for (Node node : childrenList) {
-            if(gridPane.getRowIndex(node) == y && gridPane.getColumnIndex(node) == x) {
+            if (gridPane.getRowIndex(node) == y && gridPane.getColumnIndex(node) == x) {
                 gridPane.getChildren().remove(node);
                 break;
             }
         }
+        // model updaten
+        char turn = player.charAt(0);
+        ttt.doTurn(y, x, turn);
+        // gridPane updaten with move
         gridPane.add(newLabel, y, x);
     }
 
@@ -88,6 +119,7 @@ public class BoardController extends Board {
         ImageView imageView = new ImageView();
         imageView.setFitHeight(50.0);
         imageView.setFitWidth(50.0);
+        newLabel.setStyle(cellTakenStyle);
         if (turn.equals("X")) {
             Image image = new Image(BoardController.class.getClassLoader().getResourceAsStream("./X.png"));
             imageView.setImage(image);
@@ -124,9 +156,13 @@ public class BoardController extends Board {
 
     public void loadPreGameBoardState() {
         // gameLogic = null; || gameLogic = new Game();
-
         gridPane.getChildren().removeAll();
         loadGrid();
-        gridPane.setStyle("-fx-border-color: yellow; -fx-border-width:5;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;");
+        gridPane.setStyle(preGameGridStyle);
+    }
+
+    public void setOurTurn() {
+        gridPane.setStyle(ourTurnGridStyle);
+        isOurTurn = true;
     }
 }

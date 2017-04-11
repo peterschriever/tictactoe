@@ -15,13 +15,13 @@ import javafx.application.Platform;
 public class NetworkEventsController implements NetworkEvents {
 
     @Override
-    public void challengeCancelled(ChallengeCancelledResponse challengeCancelledResponse) {
-
+    public void challengeCancelled(ChallengeCancelledResponse response) {
+        System.out.println("challengeCancelled event called!");
     }
 
     @Override
-    public void challengeReceived(ChallengeReceivedResponse challengeReceivedResponse) {
-
+    public void challengeReceived(ChallengeReceivedResponse response) {
+        System.out.println("challengeReceived event called!");
     }
 
     @Override
@@ -46,13 +46,16 @@ public class NetworkEventsController implements NetworkEvents {
     }
 
     @Override
-    public void gameListReceived(GameListResponse gameListResponse) {
-
+    public void gameListReceived(GameListResponse response) {
+        System.out.println("gameListReceived event called!");
     }
 
     @Override
     public void matchReceived(MatchReceivedResponse matchReceivedResponse) {
+        System.out.println("Match received!");
 
+        //Set the board
+        Start.getBaseController().getBoardController().loadPreGameBoardState();
     }
 
     @Override
@@ -70,12 +73,14 @@ public class NetworkEventsController implements NetworkEvents {
 
     @Override
     public void ourTurn(OurTurnResponse ourTurnResponse) {
-
+        // notify BoardController: update GUI to reflect turn change
+        Start.getBaseController().getBoardController().setOurTurn();
     }
 
     @Override
-    public void playerListReceived(PlayerListResponse playerListResponse) {
-
+    public void playerListReceived(PlayerListResponse response) {
+        System.out.println("playerListReceived event called!");
+        System.out.println("Hello world from the NetworkEventsController!");
     }
 
     @Override
