@@ -96,6 +96,7 @@ public class ControlsController implements Initializable {
 
     public void updatePlayerList(List<String> playerList) {
         ObservableList<String> list = FXCollections.observableArrayList(playerList);
+        list.remove(Start.getBaseController().getLoggedInPlayer()); // make sure not to include ourselves
         Platform.runLater(() -> this.playerList.setItems(list));
     }
 

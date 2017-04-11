@@ -37,7 +37,7 @@ public class BoardController extends Board {
 
     private static final String gridCellStyle = "-fx-border-color: black; -fx-border-width:1;";
     private static final String cellTakenStyle = "-fx-border-color: red; -fx-border-width:1;";
-    private static final String preGameGridStyle = "-fx-border-color: orange;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
+    private static final String preGameGridStyle = "-fx-border-color: yellow;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
     private static final String ourTurnGridStyle = "-fx-border-color: green;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
     private static final String theirTurnGridStyle = "-fx-border-color: red;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
     private static double cellWidth;
@@ -90,11 +90,12 @@ public class BoardController extends Board {
                 label.setStyle(gridCellStyle);
                 label.setGraphic(imageView);
 
-                final int finali = i; final int finalj = j;
+                final int finali = i;
+                final int finalj = j;
                 Platform.runLater(() -> gridPane.add(label, finalj, finali));
             }
         }
-        Platform.runLater(() -> gridPane.setStyle(preGameGridStyle));
+        gridPane.setStyle(preGameGridStyle);
     }
 
     // Move received from within game
@@ -150,11 +151,12 @@ public class BoardController extends Board {
                 break;
             }
         }
+        // gridPane updaten with move
+        Platform.runLater(() -> gridPane.add(newLabel, x, y));
+
         // model updaten
         char turn = player.charAt(0);
         ttt.doTurn(y, x, turn);
-        // gridPane updaten with move
-        Platform.runLater(() -> gridPane.add(newLabel, y, x));
     }
 
     private CustomLabel makeLabel(int x, int y, String turn) {
@@ -185,13 +187,13 @@ public class BoardController extends Board {
     public Map<Integer, int[]> getListOfCoordinates() {
         Map<Integer, int[]> listOfCoordinates = new HashMap<>();
         int key = 0;
-        int[] values = new int[2];
-        for (int i = 0; i < BOARDSIZE; i++) {
-            for (int j = 0; j < BOARDSIZE; j++) {
-                key = i * BOARDSIZE + j;
-                values[0] = i;
-                values[1] = j;
-                listOfCoordinates.put(key, values);
+//        int[] values = new int[2];
+        for (int y = 0; y < BOARDSIZE; y++) {
+            for (int x = 0; x < BOARDSIZE; x++) {
+//                values[0] = x;
+//                values[1] = y;
+                listOfCoordinates.put(key, new int[]{x, y});
+                key++;
             }
         }
         return listOfCoordinates;
@@ -201,10 +203,11 @@ public class BoardController extends Board {
         System.out.println("PreGameBoardState Loaded!");
         Platform.runLater(() -> gridPane.getChildren().clear());
         Platform.runLater(this::loadGrid);
-        Platform.runLater(() -> gridPane.setStyle(preGameGridStyle));
+//        Platform.runLater(() -> gridPane.setStyle(preGameGridStyle));
     }
 
     public void setOurTurn() {
+        System.out.println("ourTurn called: setStyle!");
         Platform.runLater(() -> gridPane.setStyle(ourTurnGridStyle));
         isOurTurn = true;
     }

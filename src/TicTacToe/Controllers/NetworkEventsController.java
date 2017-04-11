@@ -77,6 +77,7 @@ public class NetworkEventsController implements NetworkEvents {
         int position = response.getMovePosition();
         BoardController boardController = Start.getBaseController().getBoardController();
         int[] coordinates = boardController.getListOfCoordinates().get(position);
+        System.out.println("MOVE Received: position: " + position + " coordinates[0]: " + coordinates[0] + " coordinates[1]: " + coordinates[1]);
 
         int x = coordinates[0];
         int y = coordinates[1];
