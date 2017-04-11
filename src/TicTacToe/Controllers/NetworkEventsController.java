@@ -1,6 +1,7 @@
 package TicTacToe.Controllers;
 
 import Framework.Dialogs.*;
+import Framework.GUI.Base;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.*;
 import TicTacToe.Start;
@@ -26,6 +27,8 @@ public class NetworkEventsController implements NetworkEvents {
 
     @Override
     public void gameEnded(GameEndResponse gameEndResponse) {
+        System.out.println("GameEnded received!");
+
         // show GameEndedDialog
         String result = gameEndResponse.getResult();
         DialogInterface gameEndedDialog = new MessageDialog(
@@ -64,6 +67,13 @@ public class NetworkEventsController implements NetworkEvents {
     @Override
     public void moveReceived(MoveResponse response) {
         String player = response.getMovingPlayer();
+        if (player.equals(Start.getBaseController().getLoggedInPlayer())) {
+            return; // ignore moves we have made ourselves.
+        }
+        if (response.getMoveDetails() != null && response.getMoveDetails().equals("Illegal move")) {
+            return; // ignore an illegal move, to prevent getting exceptions on our position conversion
+        }
+
         int position = response.getMovePosition();
         BoardController boardController = Start.getBaseController().getBoardController();
         int[] coordinates = boardController.getListOfCoordinates().get(position);

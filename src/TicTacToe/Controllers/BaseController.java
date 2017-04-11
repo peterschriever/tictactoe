@@ -25,6 +25,8 @@ public class BaseController extends Base {
     private BoardController boardController;
     private ControlsController controlsController;
 
+    private String loggedInPlayer;
+
     @Override
     public void initialize() {
         super.initialize();
@@ -46,7 +48,7 @@ public class BaseController extends Base {
             if (playerName != null && !playerName.trim().equals("")) {
                 loginRequest = new LoginRequest(Start.getConn(), playerName);
                 loginRequest.execute();
-                System.out.println("Send login request for playerName: " + playerName);
+                loggedInPlayer = playerName;
                 return;
             }
         }  catch (IOException|InterruptedException e) {
@@ -86,5 +88,9 @@ public class BaseController extends Base {
 
     public ControlsController getControlsController() {
         return this.controlsController;
+    }
+
+    public String getLoggedInPlayer() {
+        return loggedInPlayer;
     }
 }
