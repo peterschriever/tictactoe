@@ -5,8 +5,10 @@ import Framework.Dialogs.ErrorDialog;
 import Framework.Dialogs.MessageDialog;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.*;
+import TicTacToe.Models.TicTacToe;
 import TicTacToe.Start;
 import javafx.application.Platform;
+import TicTacToe.Models.TicTacToe;
 
 /**
  * Created by peterzen on 2017-04-06.
@@ -56,6 +58,7 @@ public class NetworkEventsController implements NetworkEvents {
 
         //Set the board
         Start.getBaseController().getBoardController().loadPreGameBoardState();
+        Start.getBaseController().getBoardController().ttt = new TicTacToe();
     }
 
     @Override
@@ -79,8 +82,7 @@ public class NetworkEventsController implements NetworkEvents {
 
     @Override
     public void playerListReceived(PlayerListResponse response) {
-        System.out.println("playerListReceived event called!");
-        System.out.println("Hello world from the NetworkEventsController!");
+        Start.getBaseController().getControlsController().updatePlayerList(response.getPlayerList());
     }
 
     @Override
