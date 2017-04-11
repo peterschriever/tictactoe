@@ -8,16 +8,10 @@ import Framework.GameStart;
 import Framework.Networking.Connection;
 import Framework.Networking.ConnectionInterface;
 import Framework.Networking.NetworkEvents;
-import Framework.Networking.Response.ChallengeReceivedResponse;
-import Framework.Networking.Response.MoveResponse;
-import Framework.Networking.Response.OurTurnResponse;
-import Framework.Networking.Response.Response;
 import Framework.Networking.SimulatedConnection;
 import TicTacToe.Controllers.BaseController;
 import TicTacToe.Controllers.DialogEventsController;
 import TicTacToe.Controllers.NetworkEventsController;
-import TicTacToe.Models.AI;
-import TicTacToe.Models.TTTGame;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,7 +19,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 
 /**
@@ -47,7 +40,6 @@ public class Start extends Application implements GameStart {
     }
 
     public static void main(String[] args, Stage stage, Scene scene) throws IOException, InterruptedException {
-        System.out.println(Config.get("network", "test"));
         new Start(stage, scene);
     }
 
@@ -55,10 +47,12 @@ public class Start extends Application implements GameStart {
         // Scene meegegeven die weer wordt vervangen door updateGameScene method. --> dus, is dit nodig?
         this.stage = stage;
         this.scene = scene;
+
         // setup and save the connection
         String host = Config.get("network", "host");
         int port = Integer.parseInt(Config.get("network", "port"));
         conn = new Connection(host, port, networkEventHandler);
+
         if (!stage.isShowing()) {
             stage.show();
         }
@@ -101,15 +95,15 @@ public class Start extends Application implements GameStart {
     public void start() {
         // when started from either the framework or standalone
 
-        // DEBUG: test effect of s MoveResponse
-        MoveResponse moveResponse = new MoveResponse("O", "Details", 5);
-        moveResponse.executeCallback();
+        // DEBUG: test effect of a MoveResponse
+//        MoveResponse moveResponse = new MoveResponse("O", "Details", 5);
+//        moveResponse.executeCallback();
 
         // DEBUG: test the effect of a GameEndedResponse
         // Response gameEndResponse = new GameEndResponse(0, 0, "hello world", "DRAW");
         // gameEndResponse.executeCallback();
-        Response ourTurn = new OurTurnResponse("turnip");
-        ourTurn.executeCallback();
+//        Response ourTurn = new OurTurnResponse("turnip");
+//        ourTurn.executeCallback();
 
         // DEBUG: test the effect of ChallengeReceivedResponse
         //Response challengeReceiveResponse = new ChallengeReceivedResponse("Eran", "tic-tac-toe", 1234 );
@@ -135,68 +129,5 @@ public class Start extends Application implements GameStart {
         oldConn = tempConn;
         System.out.println("now using: " + conn);
         System.out.println("before we used: " + oldConn);
-    }
-
-    /**
-     * Game class. Can be moved to the controller. When a user clicks a pane, the doTurn is invokec for the x and y of that pane
-     */
-    private static class Game {
-
-        private char player;
-        private TTTGame TTTGame;
-        private AI computer;
-
-        private boolean hasWinner = false;
-
-
-        private Game() {
-            this.player = 'x';
-            this.TTTGame = new TTTGame();
-            this.computer = new AI(this.TTTGame, 'o');
-
-            this.TTTGame.showBoard();
-
-            this.askForInput();
-        }
-
-        private void askForInput() {
-            this.checkWinner();
-
-            if (!this.hasWinner) {
-                Scanner reader = new Scanner(System.in);  // Reading from commandline
-                System.out.println("Waar wil je je " + this.player + " zetten? (x <spatie> y) ");
-
-                this.doTurn(reader.nextLine());
-            }
-        }
-
-        private void doTurn(String turn) {
-            String[] turnPlace = turn.split("\\s+");
-
-            if (TTTGame.doTurn(Integer.valueOf(turnPlace[0]), Integer.valueOf(turnPlace[1]), this.player)) { // y x
-                //player set the turn
-                computer.doTurn(TTTGame.getBoard());
-                TTTGame.showBoard();
-
-                this.askForInput();
-            } else {
-                //TTTGame.showBoard();
-                System.out.println("Dit hokje is al bezet of bestaat niet. Probeer het opnieuw");
-                this.askForInput();
-            }
-        }
-
-        private void checkWinner() {
-            if (TTTGame.checkForWinner(this.player)) {
-                System.out.println(this.player + " is the winner");
-                this.hasWinner = true;
-            } else if (TTTGame.checkForWinner(computer.getPlayer())) {
-                System.out.println(computer.getPlayer() + " is the winner");
-                this.hasWinner = true;
-            } else if (TTTGame.checkDraw()) {
-                System.out.println("Draw!");
-                this.hasWinner = true;
-            }
-        }
     }
 }

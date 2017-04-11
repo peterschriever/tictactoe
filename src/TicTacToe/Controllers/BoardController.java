@@ -89,10 +89,12 @@ public class BoardController extends Board {
                 gridPane.setHalignment(label, HPos.CENTER);
                 label.setStyle(gridCellStyle);
                 label.setGraphic(imageView);
-                gridPane.add(label, j, i);
+
+                final int finali = i; final int finalj = j;
+                Platform.runLater(() -> gridPane.add(label, finalj, finali));
             }
         }
-        gridPane.setStyle(preGameGridStyle);
+        Platform.runLater(() -> gridPane.setStyle(preGameGridStyle));
     }
 
     // Move received from within game
@@ -135,7 +137,7 @@ public class BoardController extends Board {
 
         // set isOurTurn false
         isOurTurn = false;
-        gridPane.setStyle(theirTurnGridStyle);
+        Platform.runLater(() -> gridPane.setStyle(theirTurnGridStyle));
     }
 
     // Move received from server
@@ -144,7 +146,7 @@ public class BoardController extends Board {
         ObservableList<Node> childrenList = gridPane.getChildren();
         for (Node node : childrenList) {
             if (gridPane.getRowIndex(node) == y && gridPane.getColumnIndex(node) == x) {
-                gridPane.getChildren().remove(node);
+                Platform.runLater(() -> gridPane.getChildren().remove(node));
                 break;
             }
         }
@@ -152,7 +154,7 @@ public class BoardController extends Board {
         char turn = player.charAt(0);
         ttt.doTurn(y, x, turn);
         // gridPane updaten with move
-        gridPane.add(newLabel, y, x);
+        Platform.runLater(() -> gridPane.add(newLabel, y, x));
     }
 
     private CustomLabel makeLabel(int x, int y, String turn) {
@@ -197,13 +199,13 @@ public class BoardController extends Board {
 
     public void loadPreGameBoardState() {
         // gameLogic = null; || gameLogic = new Game();
-        gridPane.getChildren().removeAll();
+        Platform.runLater(() -> gridPane.getChildren().removeAll());
         loadGrid();
-        gridPane.setStyle(preGameGridStyle);
+        Platform.runLater(() -> gridPane.setStyle(preGameGridStyle));
     }
 
     public void setOurTurn() {
-        gridPane.setStyle(ourTurnGridStyle);
+        Platform.runLater(() -> gridPane.setStyle(ourTurnGridStyle));
         isOurTurn = true;
     }
 }

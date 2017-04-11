@@ -3,10 +3,8 @@ package TicTacToe.Controllers;
 import Framework.Config;
 import Framework.Dialogs.DialogInterface;
 import Framework.Dialogs.ErrorDialog;
-import Framework.Networking.Connection;
 import Framework.Networking.Request.ChallengeRequest;
 import Framework.Networking.Request.GetPlayerListRequest;
-import TicTacToe.Start;
 import Framework.Networking.Request.Request;
 import TicTacToe.Start;
 import javafx.application.Platform;
@@ -88,7 +86,7 @@ public class ControlsController implements Initializable {
             new ErrorDialog("Error", "Please select an user").display();
         } else {
             try {
-                ChallengeRequest request = new ChallengeRequest(Start.getConn(), selectedPlayer, "Tic-Tac-Toe");
+                ChallengeRequest request = new ChallengeRequest(Start.getConn(), selectedPlayer, "Tic-tac-toe");
                 request.execute();
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
@@ -98,7 +96,7 @@ public class ControlsController implements Initializable {
 
     public void updatePlayerList(List<String> playerList) {
         ObservableList<String> list = FXCollections.observableArrayList(playerList);
-        this.playerList.setItems(list);
+        Platform.runLater(() -> this.playerList.setItems(list));
     }
 
     /**
