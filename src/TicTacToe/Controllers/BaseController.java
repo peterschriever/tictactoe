@@ -8,6 +8,7 @@ import Framework.GUI.Board;
 import Framework.Networking.Request.LoginRequest;
 import Framework.Networking.Request.Request;
 import TicTacToe.Start;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
@@ -29,32 +30,32 @@ public class BaseController extends Base {
         super.initialize();
         // setup Connection response observer
         Start.getConn().setupInputObserver();
-        attemptPlayerLogin();
+        try {
+            attemptPlayerLogin(Config.get("game", "playerName"));
+        } catch (IOException e) {
+            ErrorDialog errorDialog = new ErrorDialog("IOException: could not load from game.properties", "Please contact a project developer.");
+            Platform.runLater(errorDialog::display);
+        }
     }
 
-    private void attemptPlayerLogin() {
+    public void attemptPlayerLogin(String playerName) {
         Request loginRequest;
         ErrorDialog errorDialog;
 
         try {
-            String playerName = Config.get("game", "playerName");
             if (playerName != null) {
                 loginRequest = new LoginRequest(Start.getConn(), playerName);
                 loginRequest.execute();
                 System.out.println("Send login request for playerName: " + playerName);
                 return;
             }
-        } catch (IOException e) {
-            errorDialog = new ErrorDialog("IOException: could not load from game.properties", "Please contact a project developer.");
-            errorDialog.display();
-        } catch (InterruptedException e) {
-            errorDialog = new ErrorDialog("InterruptedException: could not send game server Request", "Please contact a project developer.");
-            errorDialog.display();
+        }  catch (IOException|InterruptedException e) {
+            errorDialog = new ErrorDialog("IO|InterruptedException: could not send game server Request", "Please contact a project developer.");
+            Platform.runLater(errorDialog::display);
         }
-
         // Config was null or failed: show UsernameDialog
-        UserNameDialog loginDialog = new UserNameDialog();
-        loginDialog.display();
+        UserNameDialog loginDialog = new UserNameDialog(Start.getDialogEventsController());
+        Platform.runLater(loginDialog::display);
     }
 
     @Override

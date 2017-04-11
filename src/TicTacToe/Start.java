@@ -1,9 +1,11 @@
 package TicTacToe;
 
+import Framework.Dialogs.DialogEvents;
 import Framework.Networking.Response.GameEndResponse;
 import Framework.Networking.Response.OurTurnResponse;
 import Framework.Networking.Response.Response;
 import TicTacToe.Controllers.BaseController;
+import TicTacToe.Controllers.DialogEventsController;
 import TicTacToe.Controllers.NetworkEventsController;
 import Framework.Config;
 import Framework.GameStart;
@@ -30,6 +32,7 @@ public class Start extends Application implements GameStart {
     private Stage stage;
     private static Connection conn;
     private static final NetworkEvents networkEventHandler = new NetworkEventsController();
+    private final static DialogEvents dialogEventsController = new DialogEventsController();
     private final static BaseController baseController = new BaseController();
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -76,6 +79,10 @@ public class Start extends Application implements GameStart {
 
     public Start() {
         // This constructor only exists to support stand-alone starting
+    }
+
+    public static DialogEvents getDialogEventsController() {
+        return dialogEventsController;
     }
 
     public void updateGameScene() throws IOException {
