@@ -1,11 +1,18 @@
 package TicTacToe.Controllers;
 
+import Framework.AI.BotInterface;
 import Framework.Config;
 import Framework.Dialogs.DialogInterface;
 import Framework.Dialogs.ErrorDialog;
 import Framework.GUI.Board;
-import TicTacToe.Models.TicTacToe;
+import Framework.Game.GameLogicInterface;
+import Framework.Networking.Request.MoveRequest;
+import Framework.Networking.Request.Request;
+import TicTacToe.Models.AI;
+import TicTacToe.Models.TTTGame;
+import TicTacToe.Start;
 import TicTacToe.Views.CustomLabel;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.scene.Node;
@@ -13,8 +20,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Border;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,7 +30,8 @@ import java.util.Map;
  */
 public class BoardController extends Board {
     private static final int BOARDSIZE = 3;
-    private static TicTacToe ttt = new TicTacToe();
+    private TTTGame ttt;
+    private AI tttAI;
     private Label[] listOfLabels;
     private boolean isOurTurn = false;
 
@@ -37,7 +43,28 @@ public class BoardController extends Board {
     private static double cellWidth;
     private static double cellHeight;
 
+    public BotInterface getAI() {
+        return tttAI;
+    }
+
+    public GameLogicInterface getGameLogic() {
+        return ttt;
+    }
+
+    public void resetGameLogic() {
+        ttt = new TTTGame();
+    }
+
     public void initialize() {
+        ttt = new TTTGame();
+        try {
+            tttAI = new AI(ttt, Config.get("game", "useCharacterForOpponent").charAt(0));
+        } catch (IOException e) {
+            DialogInterface errDialog = new ErrorDialog("Config error", "Could not load property: useCharacterForPlayer." +
+                    "\nPlease check your game.properties file.");
+            errDialog.display();
+        }
+
         cellWidth = (gridPane.getPrefWidth() / BOARDSIZE) - 2;
         cellHeight = (gridPane.getPrefWidth() / BOARDSIZE) - 2;
         drawGrid(BOARDSIZE);
@@ -86,13 +113,27 @@ public class BoardController extends Board {
         } catch (IOException e) {
             DialogInterface errorDialog = new ErrorDialog("Config error", "Could not load property: useCharacterForPlayer." +
                     "\nPlease check your game.properties file.");
-            errorDialog.display();
+            Platform.runLater(errorDialog::display);
         }
         CustomLabel newLabel = makeLabel(x, y, turn);
         gridPane.getChildren().remove(label);
         gridPane.add(newLabel, y, x);
 
-        // @TODO: stuur MoveRequest naar server
+        // update models
+        char turnChar = turn.charAt(0);
+        ttt.doTurn(y, x, turnChar);
+
+        // send MoveRequest to game server
+        int pos = x * BOARDSIZE + y;
+        Request moveRequest = new MoveRequest(Start.getConn(), pos);
+        try {
+            moveRequest.execute();
+        } catch (IOException | InterruptedException e) {
+            DialogInterface errDialog = new ErrorDialog("IO|InterruptedException: could not send moveRequest to the server", "Please contact the project developers.");
+            errDialog.display();
+        }
+
+        // set isOurTurn false
         isOurTurn = false;
         gridPane.setStyle(theirTurnGridStyle);
     }

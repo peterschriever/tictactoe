@@ -1,15 +1,10 @@
 package TicTacToe.Controllers;
 
-import Framework.Dialogs.DialogInterface;
-import Framework.Dialogs.ErrorDialog;
-import Framework.Dialogs.MessageDialog;
+import Framework.Dialogs.*;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.*;
-import TicTacToe.Models.TicTacToe;
 import TicTacToe.Start;
 import javafx.application.Platform;
-import TicTacToe.Models.TicTacToe;
-
 
 
 /**
@@ -25,7 +20,8 @@ public class NetworkEventsController implements NetworkEvents {
 
     @Override
     public void challengeReceived(ChallengeReceivedResponse response) {
-        System.out.println("challengeReceived event called!");
+        AbstractDialog challengeDialog = new ChallengeReceivedDialog(Start.getDialogEventsController(), response.getChallenger(), response.getChallengeNumber());
+        Platform.runLater(challengeDialog::display);
     }
 
     @Override
@@ -36,12 +32,14 @@ public class NetworkEventsController implements NetworkEvents {
                 "Game has ended!",
                 "Game resulted in a " + result + "!",
                 "Comment: " + gameEndResponse.getComment() + "\n"
-                + "Player one score: " + gameEndResponse.getPlayerOneScore() + "\n"
-                + "Player two score: " + gameEndResponse.getPlayerTwoScore()
+                        + "Player one score: " + gameEndResponse.getPlayerOneScore() + "\n"
+                        + "Player two score: " + gameEndResponse.getPlayerTwoScore()
         );
         Platform.runLater(gameEndedDialog::display);
 
         // reset / update game-logic models (via BoardController)
+        Start.getBaseController().getBoardController().resetGameLogic();
+
         // reset / update BoardView look (via BoardController)
         Start.getBaseController().getBoardController().loadPreGameBoardState();
 
@@ -56,11 +54,8 @@ public class NetworkEventsController implements NetworkEvents {
 
     @Override
     public void matchReceived(MatchReceivedResponse matchReceivedResponse) {
-        System.out.println("Match received!");
-
-        //Set the board
+        //Reset the board
         Start.getBaseController().getBoardController().loadPreGameBoardState();
-        Start.getBaseController().getBoardController().ttt = new TicTacToe();
 
         //Disable the controls
         Start.getBaseController().getControlsController().disableControls();
@@ -81,7 +76,7 @@ public class NetworkEventsController implements NetworkEvents {
 
     @Override
     public void ourTurn(OurTurnResponse ourTurnResponse) {
-        // notify BoardController: update GUI to reflect turn change
+        // update GUI (and enable possibility to move) to reflect turn change
         Start.getBaseController().getBoardController().setOurTurn();
     }
 
