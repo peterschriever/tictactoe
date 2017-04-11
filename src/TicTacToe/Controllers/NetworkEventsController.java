@@ -69,8 +69,9 @@ public class NetworkEventsController implements NetworkEvents {
     }
 
     @Override
-    public void ourTurn(OurTurnResponse response) {
-        System.out.println("ourTurn event called!");
+    public void ourTurn(OurTurnResponse ourTurnResponse) {
+        // notify BoardController: update GUI to reflect turn change
+        Start.getBaseController().getBoardController().setOurTurn();
     }
 
     @Override
