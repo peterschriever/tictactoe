@@ -5,6 +5,7 @@ import Framework.Dialogs.DialogEvents;
 import Framework.GameStart;
 import Framework.Networking.Connection;
 import Framework.Networking.NetworkEvents;
+import Framework.Networking.Response.ChallengeReceivedResponse;
 import Framework.Networking.Response.MoveResponse;
 import Framework.Networking.Response.OurTurnResponse;
 import Framework.Networking.Response.Response;
@@ -115,10 +116,14 @@ public class Start extends Application implements GameStart {
         moveResponse.executeCallback();
 
         // DEBUG: test the effect of a GameEndedResponse
-//        Response gameEndResponse = new GameEndResponse(0, 0, "hello world", "DRAW");
-//        gameEndResponse.executeCallback();
+        // Response gameEndResponse = new GameEndResponse(0, 0, "hello world", "DRAW");
+        // gameEndResponse.executeCallback();
         Response ourTurn = new OurTurnResponse("turnip");
         ourTurn.executeCallback();
+
+        // DEBUG: test the effect of ChallengeReceivedResponse
+        Response challengeReceiveResponse = new ChallengeReceivedResponse("Eran", "tic-tac-toe", 1234 );
+        challengeReceiveResponse.executeCallback();
     }
 
     public static Connection getConn() {
