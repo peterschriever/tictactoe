@@ -3,6 +3,8 @@ package TicTacToe.Controllers;
 import Framework.Dialogs.ErrorDialog;
 import Framework.Networking.Connection;
 import Framework.Networking.Request.ChallengeRequest;
+import Framework.Networking.Request.GetPlayerListRequest;
+import TicTacToe.Start;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,6 +17,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Eran on 6-4-2017.
@@ -37,6 +42,9 @@ public class ControlsController implements Initializable {
         this.initPlayerChallenging();
 
         this.initComputerChallenging();
+
+        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+        exec.scheduleAtFixedRate(new PlayerGetter(), 0, 5, TimeUnit.SECONDS);
 
     }
 
@@ -67,11 +75,8 @@ public class ControlsController implements Initializable {
         }
         else {
             try {
-                Connection connection = new Connection("145.33.225.170", 7789, new NetworkEventsController());
-                //@todo: delete method?
-                connection.setupInputObserver();
 
-                ChallengeRequest request = new ChallengeRequest(connection, selectedPlayer, "Tic-Tac-Toe");
+                ChallengeRequest request = new ChallengeRequest(Start.getConn(), selectedPlayer, "Tic-Tac-Toe");
                 request.execute();
             }
             catch (IOException | InterruptedException e){
@@ -100,5 +105,17 @@ public class ControlsController implements Initializable {
         }
     }
 
+    private class PlayerGetter implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                GetPlayerListRequest request = new GetPlayerListRequest(Start.getConn());
+                request.execute();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }
