@@ -122,8 +122,8 @@ public class Start extends Application implements GameStart {
         ourTurn.executeCallback();
 
         // DEBUG: test the effect of ChallengeReceivedResponse
-        Response challengeReceiveResponse = new ChallengeReceivedResponse("Eran", "tic-tac-toe", 1234 );
-        challengeReceiveResponse.executeCallback();
+        //Response challengeReceiveResponse = new ChallengeReceivedResponse("Eran", "tic-tac-toe", 1234 );
+        //challengeReceiveResponse.executeCallback();
     }
 
     public static Connection getConn() {
