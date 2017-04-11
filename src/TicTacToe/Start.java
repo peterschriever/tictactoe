@@ -1,19 +1,23 @@
 package TicTacToe;
 
+import Framework.AI.BotInterface;
 import Framework.Config;
 import Framework.Dialogs.DialogEvents;
+import Framework.Game.GameLogicInterface;
 import Framework.GameStart;
 import Framework.Networking.Connection;
+import Framework.Networking.ConnectionInterface;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.ChallengeReceivedResponse;
 import Framework.Networking.Response.MoveResponse;
 import Framework.Networking.Response.OurTurnResponse;
 import Framework.Networking.Response.Response;
+import Framework.Networking.SimulatedConnection;
 import TicTacToe.Controllers.BaseController;
 import TicTacToe.Controllers.DialogEventsController;
 import TicTacToe.Controllers.NetworkEventsController;
 import TicTacToe.Models.AI;
-import TicTacToe.Models.TicTacToe;
+import TicTacToe.Models.TTTGame;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -31,7 +35,8 @@ import java.util.Scanner;
 public class Start extends Application implements GameStart {
     private Scene scene;
     private Stage stage;
-    private static Connection conn;
+    private static ConnectionInterface conn;
+    private static ConnectionInterface oldConn;
     private static final NetworkEvents networkEventHandler = new NetworkEventsController();
     private final static DialogEvents dialogEventsController = new DialogEventsController();
     private final static BaseController baseController = new BaseController();
@@ -46,7 +51,7 @@ public class Start extends Application implements GameStart {
         new Start(stage, scene);
     }
 
-//    public TicTacToe.Start(Stage stage, Scene scene) throws IOException, InterruptedException {
+//    public TTTGame.Start(Stage stage, Scene scene) throws IOException, InterruptedException {
 //        this.stage = stage;
 //        this.scene = scene;
 //
@@ -126,8 +131,25 @@ public class Start extends Application implements GameStart {
         //challengeReceiveResponse.executeCallback();
     }
 
-    public static Connection getConn() {
+    public static ConnectionInterface getConn() {
         return conn;
+    }
+
+    public static void toggleConnection() throws IOException {
+        ConnectionInterface tempConn;
+        if (conn instanceof Connection) {
+            if (oldConn == null) {
+                GameLogicInterface gameLogic = getBaseController().getBoardController().getGameLogic();
+                BotInterface bot = getBaseController().getBoardController().getAI();
+                oldConn = new SimulatedConnection("Tic-tac-toe", gameLogic, bot, networkEventHandler);
+            }
+        }
+        // swaperoo: swap the Simulated and real Connection objects around
+        tempConn = conn;
+        conn = oldConn;
+        oldConn = tempConn;
+        System.out.println("now using: " + conn);
+        System.out.println("before we used: " + oldConn);
     }
 
     /**
@@ -136,7 +158,7 @@ public class Start extends Application implements GameStart {
     private static class Game {
 
         private char player;
-        private TicTacToe ticTacToe;
+        private TTTGame TTTGame;
         private AI computer;
 
         private boolean hasWinner = false;
@@ -144,10 +166,10 @@ public class Start extends Application implements GameStart {
 
         private Game() {
             this.player = 'x';
-            this.ticTacToe = new TicTacToe();
-            this.computer = new AI(this.ticTacToe, 'o');
+            this.TTTGame = new TTTGame();
+            this.computer = new AI(this.TTTGame, 'o');
 
-            this.ticTacToe.showBoard();
+            this.TTTGame.showBoard();
 
             this.askForInput();
         }
@@ -166,27 +188,27 @@ public class Start extends Application implements GameStart {
         private void doTurn(String turn) {
             String[] turnPlace = turn.split("\\s+");
 
-            if (ticTacToe.doTurn(Integer.valueOf(turnPlace[0]), Integer.valueOf(turnPlace[1]), this.player)) { // y x
+            if (TTTGame.doTurn(Integer.valueOf(turnPlace[0]), Integer.valueOf(turnPlace[1]), this.player)) { // y x
                 //player set the turn
-                computer.doTurn(ticTacToe.getBoard());
-                ticTacToe.showBoard();
+                computer.doTurn(TTTGame.getBoard());
+                TTTGame.showBoard();
 
                 this.askForInput();
             } else {
-                //ticTacToe.showBoard();
+                //TTTGame.showBoard();
                 System.out.println("Dit hokje is al bezet of bestaat niet. Probeer het opnieuw");
                 this.askForInput();
             }
         }
 
         private void checkWinner() {
-            if (ticTacToe.checkForWinner(this.player)) {
+            if (TTTGame.checkForWinner(this.player)) {
                 System.out.println(this.player + " is the winner");
                 this.hasWinner = true;
-            } else if (ticTacToe.checkForWinner(computer.getPlayer())) {
+            } else if (TTTGame.checkForWinner(computer.getPlayer())) {
                 System.out.println(computer.getPlayer() + " is the winner");
                 this.hasWinner = true;
-            } else if (ticTacToe.checkDraw()) {
+            } else if (TTTGame.checkDraw()) {
                 System.out.println("Draw!");
                 this.hasWinner = true;
             }

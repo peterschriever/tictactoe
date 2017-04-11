@@ -1,19 +1,23 @@
 package TicTacToe.Models;
 
+import Framework.AI.BotInterface;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AI {
+public class AI implements BotInterface {
 
-    private TicTacToe ticTacToe;
+    private TTTGame TTTGame;
 
     private HashMap<String, Integer> possibleTurns;
 
     private char player;
 
-    public AI(TicTacToe ticTacToe, char player) {
-        this.ticTacToe = ticTacToe;
+    private int[] lastMove = new int[2];
+
+    public AI(TTTGame TTTGame, char player) {
+        this.TTTGame = TTTGame;
         this.possibleTurns = new HashMap<>();
 
         this.player = player;
@@ -23,7 +27,7 @@ public class AI {
         return this.player;
     }
 
-    public void doTurn(char[][] board) {
+    public int[] doTurn(char[][] board) {
 
         //check de open vakjes.
         //dan: check of de andere gebruiker kan winnen met een van de open vakjes.
@@ -47,6 +51,8 @@ public class AI {
 
         this.placeTurn();
 
+        // Return this turns AI move [0:x, 1:y]
+        return this.lastMove;
     }
 
     private int getScore(int y, int x, char[][] board) {
@@ -104,7 +110,7 @@ public class AI {
         }
 
         //Get the current playing board
-        char[][] newBoard = this.ticTacToe.getBoard();
+        char[][] newBoard = this.TTTGame.getBoard();
         //Subtract the x value from the key
         int y = Integer.valueOf(biggest.getKey().split("")[0]);
 
@@ -116,8 +122,12 @@ public class AI {
             newBoard[y][x] = this.player;
         }
 
+        // use this to return the last AI move
+        this.lastMove[0] = x;
+        this.lastMove[1] = y;
+
         //Replace the tic-tac-toe board with the board where the AI placed his turn
-        this.ticTacToe.setBoard(newBoard);
+        this.TTTGame.setBoard(newBoard);
 
 
         //Debug

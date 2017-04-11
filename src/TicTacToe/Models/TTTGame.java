@@ -1,13 +1,15 @@
 package TicTacToe.Models;
 
+import Framework.Game.GameLogicInterface;
+
 /**
  * Created by Eran on 27-3-2017.
  */
-public class TicTacToe {
+public class TTTGame implements GameLogicInterface {
 
     public char[][] board;
 
-    public TicTacToe() {
+    public TTTGame() {
 
         this.board = new char[3][3];
 

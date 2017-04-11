@@ -1,8 +1,13 @@
 package TicTacToe.Controllers;
 
+import Framework.Config;
+import Framework.Dialogs.DialogInterface;
 import Framework.Dialogs.ErrorDialog;
 import Framework.Networking.Connection;
 import Framework.Networking.Request.ChallengeRequest;
+import Framework.Networking.Request.Request;
+import TicTacToe.Start;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -24,11 +29,15 @@ public class ControlsController implements Initializable {
     /**
      * @var ListView The list with possible players
      */
-    @FXML ListView<String> playerList;
+    @FXML
+    ListView<String> playerList;
 
-    @FXML Button challengePlayer;
-    @FXML Button challengeComputer;
-    @FXML HBox controlsBox;
+    @FXML
+    Button challengePlayer;
+    @FXML
+    Button challengeComputer;
+    @FXML
+    HBox controlsBox;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -45,11 +54,19 @@ public class ControlsController implements Initializable {
     }
 
     private void challengeComputer() {
-        System.out.println("Computer challenged");
+        try {
+            Start.toggleConnection();
+            Request challengeBot = new ChallengeRequest(Start.getConn(), Config.get("game", "botName"), "Tic-tac-toe");
+            challengeBot.execute();
+        } catch (InterruptedException | IOException e) {
+            DialogInterface errorDialog = new ErrorDialog("Config error", "Could not load property: useCharacterForPlayer." +
+                    "\nPlease check your game.properties file.");
+            Platform.runLater(errorDialog::display);
+        }
     }
 
     private void initPlayerChallenging() {
-        ObservableList<String> possiblePlayers = FXCollections.observableArrayList (
+        ObservableList<String> possiblePlayers = FXCollections.observableArrayList(
                 "Ruben", "Peter", "Eran");
         playerList.setItems(possiblePlayers);
 
@@ -61,11 +78,10 @@ public class ControlsController implements Initializable {
     private void challengePlayer() {
         String selectedPlayer = playerList.getSelectionModel().getSelectedItem();
 
-        if(selectedPlayer == null) {
+        if (selectedPlayer == null) {
             //no player selected
             new ErrorDialog("Error", "Please select an user").display();
-        }
-        else {
+        } else {
             try {
                 Connection connection = new Connection("145.33.225.170", 7789, new NetworkEventsController());
                 //@todo: delete method?
@@ -73,8 +89,7 @@ public class ControlsController implements Initializable {
 
                 ChallengeRequest request = new ChallengeRequest(connection, selectedPlayer, "Tic-Tac-Toe");
                 request.execute();
-            }
-            catch (IOException | InterruptedException e){
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -89,13 +104,13 @@ public class ControlsController implements Initializable {
      * Disable all the controls
      */
     public void disableControls() {
-        if(!controlsBox.isDisable()) {
+        if (!controlsBox.isDisable()) {
             controlsBox.setDisable(true);
         }
     }
 
     public void enableControls() {
-        if(controlsBox.isDisable()) {
+        if (controlsBox.isDisable()) {
             controlsBox.setDisable(false);
         }
     }

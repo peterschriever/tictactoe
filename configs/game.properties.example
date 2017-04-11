@@ -6,3 +6,5 @@ useCharacterForPlayer=X
 useCharacterForOpponent=O
 
 playerName=IniedergevalCool
+
+botName=CoolBot
