@@ -13,7 +13,7 @@
 <Pane prefHeight="300.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Separator layoutX="17.0" layoutY="14.0" prefHeight="22.0" prefWidth="866.0" HBox.hgrow="ALWAYS" />
-      <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="37.0" prefHeight="194.0" prefWidth="866.0">
+      <HBox fx:id="controlsBox" alignment="CENTER_LEFT" layoutX="20.0" layoutY="37.0" prefHeight="194.0" prefWidth="866.0">
          <children>
             <VBox prefHeight="217.0" prefWidth="168.0">
                <children>

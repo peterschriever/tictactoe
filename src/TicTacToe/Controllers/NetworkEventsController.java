@@ -1,8 +1,12 @@
 package TicTacToe.Controllers;
 
+import Framework.Dialogs.DialogInterface;
+import Framework.Dialogs.ErrorDialog;
+import Framework.Dialogs.MessageDialog;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.*;
 import TicTacToe.Start;
+import javafx.application.Platform;
 
 /**
  * Created by peterzen on 2017-04-06.
@@ -21,8 +25,24 @@ public class NetworkEventsController implements NetworkEvents {
     }
 
     @Override
-    public void gameEnded(GameEndResponse response) {
-        System.out.println("gameEnded event called!");
+    public void gameEnded(GameEndResponse gameEndResponse) {
+        // show GameEndedDialog
+        String result = gameEndResponse.getResult();
+        DialogInterface gameEndedDialog = new MessageDialog(
+                "Game has ended!",
+                "Game resulted in a " + result + "!",
+                "Comment: " + gameEndResponse.getComment() + "\n"
+                + "Player one score: " + gameEndResponse.getPlayerOneScore() + "\n"
+                + "Player two score: " + gameEndResponse.getPlayerTwoScore()
+        );
+        Platform.runLater(gameEndedDialog::display);
+
+        // reset / update game-logic models (via BoardController)
+        // reset / update BoardView look (via BoardController)
+        Start.getBaseController().getBoardController().loadPreGameBoardState();
+
+        // reset GUI (enable ControlsController buttons)
+        Start.getBaseController().getControlsController().enableControls();
     }
 
     @Override
@@ -60,9 +80,8 @@ public class NetworkEventsController implements NetworkEvents {
     }
 
     @Override
-    public void errorReceived(ErrorResponse response) {
-        System.out.println("errorReceived event called!");
-
-
+    public void errorReceived(ErrorResponse errorResponse) {
+        DialogInterface errorDialog = new ErrorDialog("Network error occurred", "Possible cause: " + errorResponse.getRequest().toString());
+        Platform.runLater(errorDialog::display);
     }
 }

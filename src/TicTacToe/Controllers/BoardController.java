@@ -26,7 +26,6 @@ public class BoardController extends Board {
     public void initialize() {
         drawGrid(BOARDSIZE);
         loadGrid();
-        System.out.println("init?");
     }
 
     private void loadGrid() {
@@ -45,8 +44,6 @@ public class BoardController extends Board {
                 label.setY(j);
                 label.setOnMouseClicked(this::clickToDoMove);
                 gridPane.setHalignment(label, HPos.CENTER);
-                // @TODO borders voor binnen lijnen
-                // gridPane.setGridLinesVisible(true);
                 gridPane.add(label, j, i);
             }
         }
@@ -54,6 +51,8 @@ public class BoardController extends Board {
 
     // Move received from within game
     public void clickToDoMove(MouseEvent mouseEvent) {
+        // @TODO nog een check om te kijken of het wel de turn van de speler is.
+        // Of check al doen in NetworkEventsController..
         CustomLabel label = (CustomLabel) mouseEvent.getSource();
         int x = label.getX();
         int y = label.getY();
@@ -80,7 +79,6 @@ public class BoardController extends Board {
             }
         }
         // model updaten
-        gridPane.setGridLinesVisible(true);
         char turn = player.charAt(0);
         ttt.doTurn(y, x, turn);
         // gridPane updaten with move
@@ -124,5 +122,12 @@ public class BoardController extends Board {
             }
         }
         return listOfCoordinates;
+    }
+
+    public void loadPreGameBoardState() {
+        // gameLogic = null; || gameLogic = new Game();
+        gridPane.getChildren().removeAll();
+        loadGrid();
+        gridPane.setStyle("-fx-border-color: yellow; -fx-border-width:5;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;");
     }
 }

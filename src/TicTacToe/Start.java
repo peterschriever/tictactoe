@@ -1,6 +1,8 @@
 package TicTacToe;
 
 import Framework.Networking.Response.MoveResponse;
+import Framework.Networking.Response.GameEndResponse;
+import Framework.Networking.Response.Response;
 import TicTacToe.Controllers.BaseController;
 import TicTacToe.Controllers.NetworkEventsController;
 import Framework.Config;
@@ -100,9 +102,14 @@ public class Start extends Application implements GameStart {
     @Override
     public void start() {
         // when started from either the framework or standalone
-        baseController.getBoardController().initialize();
+
+        // DEBUG: test effect of s MoveResponse
         MoveResponse moveResponse = new MoveResponse("O", "Details", 5);
         moveResponse.executeCallback();
+
+        // DEBUG: test the effect of a GameEndedResponse
+        Response gameEndResponse = new GameEndResponse(0, 0, "hello world", "DRAW");
+        gameEndResponse.executeCallback();
     }
 
     public static Connection getConn() {
