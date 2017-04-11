@@ -1,16 +1,15 @@
 package TicTacToe;
 
+import Framework.Config;
 import Framework.Dialogs.DialogEvents;
-import Framework.Networking.Response.GameEndResponse;
+import Framework.GameStart;
+import Framework.Networking.Connection;
+import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.OurTurnResponse;
 import Framework.Networking.Response.Response;
 import TicTacToe.Controllers.BaseController;
 import TicTacToe.Controllers.DialogEventsController;
 import TicTacToe.Controllers.NetworkEventsController;
-import Framework.Config;
-import Framework.GameStart;
-import Framework.Networking.Connection;
-import Framework.Networking.NetworkEvents;
 import TicTacToe.Models.AI;
 import TicTacToe.Models.TicTacToe;
 import javafx.application.Application;
