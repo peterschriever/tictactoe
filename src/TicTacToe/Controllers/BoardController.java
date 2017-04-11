@@ -7,10 +7,12 @@ import TicTacToe.Views.CustomLabel;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Border;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,14 +23,13 @@ import java.util.Map;
  */
 public class BoardController extends Board {
     private static final int BOARDSIZE = 3;
-    private static TicTacToe ttt = new TicTacToe();
+    private Label[] listOfLabels;
 
     public void initialize() {
         drawGrid(BOARDSIZE);
         loadGrid();
-        System.out.println("init?");
     }
-
+    
     private void loadGrid() {
         int i;
         int j;
@@ -46,7 +47,7 @@ public class BoardController extends Board {
                 label.setOnMouseClicked(this::clickToDoMove);
                 gridPane.setHalignment(label, HPos.CENTER);
                 // @TODO borders voor binnen lijnen
-                // gridPane.setGridLinesVisible(true);
+                gridPane.setGridLinesVisible(true);
                 gridPane.add(label, j, i);
             }
         }
@@ -69,21 +70,16 @@ public class BoardController extends Board {
     }
 
     // Move received from server
-    public void setMove(int x, int y, String player) {
-        CustomLabel newLabel = makeLabel(x, y, player);
+    public void setMove(int x, int y, String turn) {
+        CustomLabel newLabel = makeLabel(x, y, turn);
         ObservableList<Node> childrenList = gridPane.getChildren();
+        Node result;
         for (Node node : childrenList) {
-            System.out.println(GridPane.getRowIndex(node));
-            if (GridPane.getRowIndex(node) == y && GridPane.getColumnIndex(node) == x) {
+            if(gridPane.getRowIndex(node) == y && gridPane.getColumnIndex(node) == x) {
                 gridPane.getChildren().remove(node);
                 break;
             }
         }
-        // model updaten
-        gridPane.setGridLinesVisible(true);
-        char turn = player.charAt(0);
-        ttt.doTurn(y, x, turn);
-        // gridPane updaten with move
         gridPane.add(newLabel, y, x);
     }
 
@@ -124,5 +120,13 @@ public class BoardController extends Board {
             }
         }
         return listOfCoordinates;
+    }
+
+    public void loadPreGameBoardState() {
+        // gameLogic = null; || gameLogic = new Game();
+
+        gridPane.getChildren().removeAll();
+        loadGrid();
+        gridPane.setStyle("-fx-border-color: yellow; -fx-border-width:5;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;");
     }
 }
