@@ -8,6 +8,7 @@ import TicTacToe.Views.CustomLabel;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.scene.Node;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -21,11 +22,13 @@ import java.io.IOException;
 public class BoardController extends Board {
     private static final int BOARDSIZE = 3;
     private Label[] listOfLabels;
+    private boolean isOurTurn = false;
 
     private static final String gridCellStyle = "-fx-border-color: black; -fx-border-width:1;";
     private static final String cellTakenStyle = "-fx-border-color: red; -fx-border-width:1;";
     private static final String preGameGridStyle = "-fx-border-color: orange;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
     private static final String ourTurnGridStyle = "-fx-border-color: green;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
+    private static final String theirTurnGridStyle = "-fx-border-color: red;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
     private static double cellWidth;
     private static double cellHeight;
 
@@ -62,6 +65,12 @@ public class BoardController extends Board {
 
     // Move received from within game
     public void clickToDoMove(MouseEvent mouseEvent) {
+        if (!isOurTurn) {
+            DialogInterface errDialog = new ErrorDialog("Not your turn!", "Please wait until the borders are green");
+            errDialog.display();
+            return;
+        }
+
         CustomLabel label = (CustomLabel) mouseEvent.getSource();
         int x = label.getX();
         int y = label.getY();
@@ -76,11 +85,12 @@ public class BoardController extends Board {
             errorDialog.display();
         }
         CustomLabel newLabel = makeLabel(x, y, turn);
-        // @TODO
-        // gaat remove goedkomen met de positie? gaat meestal op basis van de tekst van de label
-        // die is er nu niet...
         gridPane.getChildren().remove(label);
         gridPane.add(newLabel, y, x);
+
+        // @TODO: stuur MoveRequest naar server
+        isOurTurn = false;
+        gridPane.setStyle(theirTurnGridStyle);
     }
 
     // Move received from server
@@ -131,6 +141,6 @@ public class BoardController extends Board {
 
     public void setOurTurn() {
         gridPane.setStyle(ourTurnGridStyle);
-
+        isOurTurn = true;
     }
 }

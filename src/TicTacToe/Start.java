@@ -107,7 +107,7 @@ public class Start extends Application implements GameStart {
 //        Response gameEndResponse = new GameEndResponse(0, 0, "hello world", "DRAW");
 //        gameEndResponse.executeCallback();
         Response ourTurn = new OurTurnResponse("turnip");
-//        ourTurn.executeCallback();
+        ourTurn.executeCallback();
     }
 
     public static Connection getConn() {
