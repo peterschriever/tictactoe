@@ -15,13 +15,13 @@ import javafx.application.Platform;
 public class NetworkEventsController implements NetworkEvents {
 
     @Override
-    public void challengeCancelled(ChallengeCancelledResponse challengeCancelledResponse) {
-
+    public void challengeCancelled(ChallengeCancelledResponse response) {
+        System.out.println("challengeCancelled event called!");
     }
 
     @Override
-    public void challengeReceived(ChallengeReceivedResponse challengeReceivedResponse) {
-
+    public void challengeReceived(ChallengeReceivedResponse response) {
+        System.out.println("challengeReceived event called!");
     }
 
     @Override
@@ -46,18 +46,26 @@ public class NetworkEventsController implements NetworkEvents {
     }
 
     @Override
-    public void gameListReceived(GameListResponse gameListResponse) {
-
+    public void gameListReceived(GameListResponse response) {
+        System.out.println("gameListReceived event called!");
     }
 
     @Override
-    public void matchReceived(MatchReceivedResponse matchReceivedResponse) {
-
+    public void matchReceived(MatchReceivedResponse response) {
+        System.out.println("matchReceived event called!");
     }
 
     @Override
-    public void moveReceived(MoveResponse moveResponse) {
+    public void moveReceived(MoveResponse response) {
+        String player = response.getMovingPlayer();
+        int position = response.getMovePosition();
+        BoardController boardController = Start.getBaseController().getBoardController();
+        int[] coordinates = boardController.getListOfCoordinates().get(position);
 
+        int x = coordinates[0];
+        int y = coordinates[1];
+        // update view via BoardController
+        boardController.setMove(x, y, player);
     }
 
     @Override
@@ -67,8 +75,9 @@ public class NetworkEventsController implements NetworkEvents {
     }
 
     @Override
-    public void playerListReceived(PlayerListResponse playerListResponse) {
-
+    public void playerListReceived(PlayerListResponse response) {
+        System.out.println("playerListReceived event called!");
+        System.out.println("Hello world from the NetworkEventsController!");
     }
 
     @Override

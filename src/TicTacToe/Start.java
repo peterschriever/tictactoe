@@ -5,6 +5,7 @@ import Framework.Dialogs.DialogEvents;
 import Framework.GameStart;
 import Framework.Networking.Connection;
 import Framework.Networking.NetworkEvents;
+import Framework.Networking.Response.MoveResponse;
 import Framework.Networking.Response.OurTurnResponse;
 import Framework.Networking.Response.Response;
 import TicTacToe.Controllers.BaseController;
@@ -108,6 +109,10 @@ public class Start extends Application implements GameStart {
     @Override
     public void start() {
         // when started from either the framework or standalone
+
+        // DEBUG: test effect of s MoveResponse
+        MoveResponse moveResponse = new MoveResponse("O", "Details", 5);
+        moveResponse.executeCallback();
 
         // DEBUG: test the effect of a GameEndedResponse
 //        Response gameEndResponse = new GameEndResponse(0, 0, "hello world", "DRAW");

@@ -4,23 +4,27 @@ import Framework.Config;
 import Framework.Dialogs.DialogInterface;
 import Framework.Dialogs.ErrorDialog;
 import Framework.GUI.Board;
+import TicTacToe.Models.TicTacToe;
 import TicTacToe.Views.CustomLabel;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.scene.Node;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by femkeh on 06/04/17.
  */
 public class BoardController extends Board {
     private static final int BOARDSIZE = 3;
+    private static TicTacToe ttt = new TicTacToe();
     private Label[] listOfLabels;
     private boolean isOurTurn = false;
 
@@ -74,7 +78,6 @@ public class BoardController extends Board {
         CustomLabel label = (CustomLabel) mouseEvent.getSource();
         int x = label.getX();
         int y = label.getY();
-        System.out.println("x: " + x + " y:" + y);
         String turn = " ";
         try {
             turn = Config.get("game", "useCharacterForPlayer");
@@ -94,16 +97,19 @@ public class BoardController extends Board {
     }
 
     // Move received from server
-    public void setMove(int x, int y, String turn) {
-        CustomLabel newLabel = makeLabel(x, y, turn);
+    public void setMove(int x, int y, String player) {
+        CustomLabel newLabel = makeLabel(x, y, player);
         ObservableList<Node> childrenList = gridPane.getChildren();
-        Node result;
         for (Node node : childrenList) {
             if (gridPane.getRowIndex(node) == y && gridPane.getColumnIndex(node) == x) {
                 gridPane.getChildren().remove(node);
                 break;
             }
         }
+        // model updaten
+        char turn = player.charAt(0);
+        ttt.doTurn(y, x, turn);
+        // gridPane updaten with move
         gridPane.add(newLabel, y, x);
     }
 
@@ -131,9 +137,24 @@ public class BoardController extends Board {
         return newLabel;
     }
 
+    // List of coordinates
+    public Map<Integer, int[]> getListOfCoordinates() {
+        Map<Integer, int[]> listOfCoordinates = new HashMap<>();
+        int key = 0;
+        int[] values = new int[2];
+        for (int i = 0; i < BOARDSIZE; i++) {
+            for (int j = 0; j < BOARDSIZE; j++) {
+                key = i * BOARDSIZE + j;
+                values[0] = i;
+                values[1] = j;
+                listOfCoordinates.put(key, values);
+            }
+        }
+        return listOfCoordinates;
+    }
+
     public void loadPreGameBoardState() {
         // gameLogic = null; || gameLogic = new Game();
-
         gridPane.getChildren().removeAll();
         loadGrid();
         gridPane.setStyle(preGameGridStyle);
