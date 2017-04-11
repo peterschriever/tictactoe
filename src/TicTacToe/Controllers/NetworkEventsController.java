@@ -1,8 +1,6 @@
 package TicTacToe.Controllers;
 
-import Framework.Dialogs.DialogInterface;
-import Framework.Dialogs.ErrorDialog;
-import Framework.Dialogs.MessageDialog;
+import Framework.Dialogs.*;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.*;
 import TicTacToe.Start;
@@ -21,7 +19,8 @@ public class NetworkEventsController implements NetworkEvents {
 
     @Override
     public void challengeReceived(ChallengeReceivedResponse response) {
-        System.out.println("challengeReceived event called!");
+        AbstractDialog challengeDialog = new ChallengeReceivedDialog(Start.getDialogEventsController(), response.getChallenger(), response.getChallengeNumber());
+        Platform.runLater(challengeDialog::display);
     }
 
     @Override
