@@ -89,6 +89,11 @@ public class NetworkEventsController implements NetworkEvents {
     public void ourTurn(OurTurnResponse ourTurnResponse) {
         // update GUI (and enable possibility to move) to reflect turn change
         Start.getBaseController().getBoardController().setOurTurn();
+
+        // let the AI generate a move if needed
+        if (Start.getBaseController().getControlsController().isBotPlaying()) {
+            Start.getBaseController().getBoardController().doAIMove();
+        }
     }
 
     @Override

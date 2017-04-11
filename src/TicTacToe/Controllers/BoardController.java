@@ -187,11 +187,8 @@ public class BoardController extends Board {
     public Map<Integer, int[]> getListOfCoordinates() {
         Map<Integer, int[]> listOfCoordinates = new HashMap<>();
         int key = 0;
-//        int[] values = new int[2];
         for (int y = 0; y < BOARDSIZE; y++) {
             for (int x = 0; x < BOARDSIZE; x++) {
-//                values[0] = x;
-//                values[1] = y;
                 listOfCoordinates.put(key, new int[]{x, y});
                 key++;
             }
@@ -203,12 +200,36 @@ public class BoardController extends Board {
         System.out.println("PreGameBoardState Loaded!");
         Platform.runLater(() -> gridPane.getChildren().clear());
         Platform.runLater(this::loadGrid);
-//        Platform.runLater(() -> gridPane.setStyle(preGameGridStyle));
     }
 
     public void setOurTurn() {
         System.out.println("ourTurn called: setStyle!");
         Platform.runLater(() -> gridPane.setStyle(ourTurnGridStyle));
         isOurTurn = true;
+    }
+
+    public void doAIMove() {
+        int[] moveCoords = getAI().doTurn(getGameLogic().getBoard());
+        try {
+            // setMove updates gameLogic and GUI
+            setMove(moveCoords[0], moveCoords[1], Config.get("game", "useCharacterForPlayer"));
+
+            // send moveRequest to game server
+            int pos = moveCoords[0] * BOARDSIZE + moveCoords[1];
+            System.out.println("AI MOVE GEN: " + moveCoords[0] + "," + moveCoords[1] + " == " + pos);
+            Request moveRequest = new MoveRequest(Start.getConn(), pos);
+            moveRequest.execute();
+
+            // set isOurTurn false
+            isOurTurn = false;
+            Platform.runLater(() -> gridPane.setStyle(theirTurnGridStyle));
+        } catch (IOException e) {
+            DialogInterface errDialog = new ErrorDialog("Config error", "Could not load property: useCharacterForPlayer." +
+                    "\nPlease check your game.properties file.");
+            Platform.runLater(errDialog::display);
+        } catch (InterruptedException e) {
+            DialogInterface errDialog = new ErrorDialog("InterruptedException", "Could not send request: moveRequest.");
+            Platform.runLater(errDialog::display);
+        }
     }
 }

@@ -17,7 +17,7 @@
          <children>
             <VBox prefHeight="217.0" prefWidth="168.0">
                <children>
-                  <CheckBox fx:id="" mnemonicParsing="false" prefHeight="21.0" prefWidth="169.0" text="Play as bot">
+                  <CheckBox fx:id="chkPlayAsBot" onAction="#toggleBotPlaying" mnemonicParsing="false" prefHeight="21.0" prefWidth="169.0" text="Play as bot">
                      <VBox.margin>
                         <Insets bottom="8.0" />
                      </VBox.margin>

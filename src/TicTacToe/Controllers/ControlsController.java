@@ -10,9 +10,11 @@ import TicTacToe.Start;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 
@@ -41,11 +43,14 @@ public class ControlsController implements Initializable {
     Button challengeComputer;
     @FXML
     HBox controlsBox;
+    @FXML
+    CheckBox chkPlayAsBot;
+
+    private boolean isBotPlaying;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //setting the player list
-
         this.initPlayerChallenging();
         this.initComputerChallenging();
 
@@ -100,6 +105,10 @@ public class ControlsController implements Initializable {
         Platform.runLater(() -> this.playerList.setItems(list));
     }
 
+    public void toggleBotPlaying(ActionEvent event) {
+        isBotPlaying = chkPlayAsBot.isSelected();
+    }
+
     /**
      * Disable all the controls
      */
@@ -113,6 +122,10 @@ public class ControlsController implements Initializable {
         if (controlsBox.isDisable()) {
             controlsBox.setDisable(false);
         }
+    }
+
+    public boolean isBotPlaying() {
+        return isBotPlaying;
     }
 
     private class PlayerGetter implements Runnable {
