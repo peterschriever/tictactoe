@@ -6,14 +6,14 @@ import java.util.Map;
 
 public class AI {
 
-    private TicTacToe ticTacToe;
+    private TTTGame TTTGame;
 
     private HashMap<String, Integer> possibleTurns;
 
     private char player;
 
-    public AI(TicTacToe ticTacToe, char player) {
-        this.ticTacToe = ticTacToe;
+    public AI(TTTGame TTTGame, char player) {
+        this.TTTGame = TTTGame;
         this.possibleTurns = new HashMap<>();
 
         this.player = player;
@@ -104,7 +104,7 @@ public class AI {
         }
 
         //Get the current playing board
-        char[][] newBoard = this.ticTacToe.getBoard();
+        char[][] newBoard = this.TTTGame.getBoard();
         //Subtract the x value from the key
         int y = Integer.valueOf(biggest.getKey().split("")[0]);
 
@@ -117,7 +117,7 @@ public class AI {
         }
 
         //Replace the tic-tac-toe board with the board where the AI placed his turn
-        this.ticTacToe.setBoard(newBoard);
+        this.TTTGame.setBoard(newBoard);
 
 
         //Debug

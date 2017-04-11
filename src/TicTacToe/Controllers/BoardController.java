@@ -4,7 +4,10 @@ import Framework.Config;
 import Framework.Dialogs.DialogInterface;
 import Framework.Dialogs.ErrorDialog;
 import Framework.GUI.Board;
-import TicTacToe.Models.TicTacToe;
+import Framework.Networking.Request.MoveRequest;
+import Framework.Networking.Request.Request;
+import TicTacToe.Models.TTTGame;
+import TicTacToe.Start;
 import TicTacToe.Views.CustomLabel;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -13,7 +16,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,7 +26,7 @@ import java.util.Map;
  */
 public class BoardController extends Board {
     private static final int BOARDSIZE = 3;
-    private static TicTacToe ttt = new TicTacToe();
+    private static TTTGame ttt = new TTTGame();
     private Label[] listOfLabels;
     private boolean isOurTurn = false;
 
@@ -91,7 +93,21 @@ public class BoardController extends Board {
         gridPane.getChildren().remove(label);
         gridPane.add(newLabel, y, x);
 
-        // @TODO: stuur MoveRequest naar server
+        // update models
+        char turnChar = turn.charAt(0);
+        ttt.doTurn(y, x, turnChar);
+
+        // send MoveRequest to game server
+        int pos = x * BOARDSIZE + y;
+        Request moveRequest = new MoveRequest(Start.getConn(), pos);
+        try {
+            moveRequest.execute();
+        } catch (IOException | InterruptedException e) {
+            DialogInterface errDialog = new ErrorDialog("IO|InterruptedException: could not send moveRequest to the server", "Please contact the project developers.");
+            errDialog.display();
+        }
+
+        // set isOurTurn false
         isOurTurn = false;
         gridPane.setStyle(theirTurnGridStyle);
     }

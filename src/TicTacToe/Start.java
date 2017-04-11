@@ -12,7 +12,7 @@ import TicTacToe.Controllers.BaseController;
 import TicTacToe.Controllers.DialogEventsController;
 import TicTacToe.Controllers.NetworkEventsController;
 import TicTacToe.Models.AI;
-import TicTacToe.Models.TicTacToe;
+import TicTacToe.Models.TTTGame;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -45,7 +45,7 @@ public class Start extends Application implements GameStart {
         new Start(stage, scene);
     }
 
-//    public TicTacToe.Start(Stage stage, Scene scene) throws IOException, InterruptedException {
+//    public TTTGame.Start(Stage stage, Scene scene) throws IOException, InterruptedException {
 //        this.stage = stage;
 //        this.scene = scene;
 //
@@ -131,7 +131,7 @@ public class Start extends Application implements GameStart {
     private static class Game {
 
         private char player;
-        private TicTacToe ticTacToe;
+        private TTTGame TTTGame;
         private AI computer;
 
         private boolean hasWinner = false;
@@ -139,10 +139,10 @@ public class Start extends Application implements GameStart {
 
         private Game() {
             this.player = 'x';
-            this.ticTacToe = new TicTacToe();
-            this.computer = new AI(this.ticTacToe, 'o');
+            this.TTTGame = new TTTGame();
+            this.computer = new AI(this.TTTGame, 'o');
 
-            this.ticTacToe.showBoard();
+            this.TTTGame.showBoard();
 
             this.askForInput();
         }
@@ -161,27 +161,27 @@ public class Start extends Application implements GameStart {
         private void doTurn(String turn) {
             String[] turnPlace = turn.split("\\s+");
 
-            if (ticTacToe.doTurn(Integer.valueOf(turnPlace[0]), Integer.valueOf(turnPlace[1]), this.player)) { // y x
+            if (TTTGame.doTurn(Integer.valueOf(turnPlace[0]), Integer.valueOf(turnPlace[1]), this.player)) { // y x
                 //player set the turn
-                computer.doTurn(ticTacToe.getBoard());
-                ticTacToe.showBoard();
+                computer.doTurn(TTTGame.getBoard());
+                TTTGame.showBoard();
 
                 this.askForInput();
             } else {
-                //ticTacToe.showBoard();
+                //TTTGame.showBoard();
                 System.out.println("Dit hokje is al bezet of bestaat niet. Probeer het opnieuw");
                 this.askForInput();
             }
         }
 
         private void checkWinner() {
-            if (ticTacToe.checkForWinner(this.player)) {
+            if (TTTGame.checkForWinner(this.player)) {
                 System.out.println(this.player + " is the winner");
                 this.hasWinner = true;
-            } else if (ticTacToe.checkForWinner(computer.getPlayer())) {
+            } else if (TTTGame.checkForWinner(computer.getPlayer())) {
                 System.out.println(computer.getPlayer() + " is the winner");
                 this.hasWinner = true;
-            } else if (ticTacToe.checkDraw()) {
+            } else if (TTTGame.checkDraw()) {
                 System.out.println("Draw!");
                 this.hasWinner = true;
             }
