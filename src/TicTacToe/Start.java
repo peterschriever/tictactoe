@@ -1,13 +1,17 @@
 package TicTacToe;
 
+import Framework.AI.BotInterface;
 import Framework.Config;
 import Framework.Dialogs.DialogEvents;
+import Framework.Game.GameLogicInterface;
 import Framework.GameStart;
 import Framework.Networking.Connection;
+import Framework.Networking.ConnectionInterface;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.MoveResponse;
 import Framework.Networking.Response.OurTurnResponse;
 import Framework.Networking.Response.Response;
+import Framework.Networking.SimulatedConnection;
 import TicTacToe.Controllers.BaseController;
 import TicTacToe.Controllers.DialogEventsController;
 import TicTacToe.Controllers.NetworkEventsController;
@@ -30,7 +34,8 @@ import java.util.Scanner;
 public class Start extends Application implements GameStart {
     private Scene scene;
     private Stage stage;
-    private static Connection conn;
+    private static ConnectionInterface conn;
+    private static ConnectionInterface oldConn;
     private static final NetworkEvents networkEventHandler = new NetworkEventsController();
     private final static DialogEvents dialogEventsController = new DialogEventsController();
     private final static BaseController baseController = new BaseController();
@@ -121,8 +126,25 @@ public class Start extends Application implements GameStart {
         ourTurn.executeCallback();
     }
 
-    public static Connection getConn() {
+    public static ConnectionInterface getConn() {
         return conn;
+    }
+
+    public static void toggleConnection() throws IOException {
+        ConnectionInterface tempConn;
+        if (conn instanceof Connection) {
+            if (oldConn == null) {
+                GameLogicInterface gameLogic = getBaseController().getBoardController().getGameLogic();
+                BotInterface bot = getBaseController().getBoardController().getAI();
+                oldConn = new SimulatedConnection("Tic-tac-toe", gameLogic, bot, networkEventHandler);
+            }
+        }
+        // swaperoo: swap the Simulated and real Connection objects around
+        tempConn = conn;
+        conn = oldConn;
+        oldConn = tempConn;
+        System.out.println("now using: " + conn);
+        System.out.println("before we used: " + oldConn);
     }
 
     /**

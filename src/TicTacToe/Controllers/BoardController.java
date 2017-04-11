@@ -1,14 +1,18 @@
 package TicTacToe.Controllers;
 
+import Framework.AI.BotInterface;
 import Framework.Config;
 import Framework.Dialogs.DialogInterface;
 import Framework.Dialogs.ErrorDialog;
 import Framework.GUI.Board;
+import Framework.Game.GameLogicInterface;
 import Framework.Networking.Request.MoveRequest;
 import Framework.Networking.Request.Request;
+import TicTacToe.Models.AI;
 import TicTacToe.Models.TTTGame;
 import TicTacToe.Start;
 import TicTacToe.Views.CustomLabel;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.scene.Node;
@@ -26,7 +30,8 @@ import java.util.Map;
  */
 public class BoardController extends Board {
     private static final int BOARDSIZE = 3;
-    private static TTTGame ttt = new TTTGame();
+    private TTTGame ttt;
+    private AI tttAI;
     private Label[] listOfLabels;
     private boolean isOurTurn = false;
 
@@ -38,7 +43,24 @@ public class BoardController extends Board {
     private static double cellWidth;
     private static double cellHeight;
 
+    public BotInterface getAI() {
+        return tttAI;
+    }
+
+    public GameLogicInterface getGameLogic() {
+        return ttt;
+    }
+
     public void initialize() {
+        ttt = new TTTGame();
+        try {
+            tttAI = new AI(ttt, Config.get("game", "useCharacterForOpponent").charAt(0));
+        } catch (IOException e) {
+            DialogInterface errDialog = new ErrorDialog("Config error", "Could not load property: useCharacterForPlayer." +
+                    "\nPlease check your game.properties file.");
+            errDialog.display();
+        }
+
         cellWidth = (gridPane.getPrefWidth() / BOARDSIZE) - 2;
         cellHeight = (gridPane.getPrefWidth() / BOARDSIZE) - 2;
         drawGrid(BOARDSIZE);
@@ -87,7 +109,7 @@ public class BoardController extends Board {
         } catch (IOException e) {
             DialogInterface errorDialog = new ErrorDialog("Config error", "Could not load property: useCharacterForPlayer." +
                     "\nPlease check your game.properties file.");
-            errorDialog.display();
+            Platform.runLater(errorDialog::display);
         }
         CustomLabel newLabel = makeLabel(x, y, turn);
         gridPane.getChildren().remove(label);
