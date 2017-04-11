@@ -43,7 +43,7 @@ public class BaseController extends Base {
         ErrorDialog errorDialog;
 
         try {
-            if (playerName != null) {
+            if (playerName != null && !playerName.trim().equals("")) {
                 loginRequest = new LoginRequest(Start.getConn(), playerName);
                 loginRequest.execute();
                 System.out.println("Send login request for playerName: " + playerName);
