@@ -3,6 +3,7 @@ package Game.Controllers;
 import Framework.Dialogs.*;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.*;
+import Game.Models.TTTGame;
 import Game.StartGame;
 import javafx.application.Platform;
 
@@ -61,6 +62,9 @@ public class NetworkEventsController implements NetworkEvents {
 
         //Disable the controls
         StartGame.getBaseController().getControlsController().disableControls();
+        StartGame.getBaseController().getControlsController().disableControls();
+
+        StartGame.getBaseController().getBoardController().ttt = new TTTGame();
     }
 
     @Override

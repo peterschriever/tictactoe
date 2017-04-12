@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public class BoardController extends Board {
     private static final int BOARDSIZE = 3;
-    private TTTGame ttt;
+    public TTTGame ttt;
     private AI tttAI;
     private Label[] listOfLabels;
     private boolean isOurTurn = false;

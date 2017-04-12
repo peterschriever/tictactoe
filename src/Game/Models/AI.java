@@ -42,7 +42,7 @@ public class AI implements BotInterface {
                     this.possibleTurns.put("" + y + x, score);
                 }
                 else {
-                    this.possibleTurns.put("" + y + x, 0);
+                    this.possibleTurns.put("" + y + x, -1);
                 }
             }
         }
@@ -60,18 +60,18 @@ public class AI implements BotInterface {
         //check if I can win with this position
         if(this.checkIfICanWin(y, x, board)) {
             board[y][x] = ' ';
-            return 100;
+            return 10;
         }
 
         //check if the other player can win with this position
         if(this.checkIfOtherCanWin(y, x, board)) {
             board[y][x] = ' ';
-            return 50;
+            return 5;
         }
 
         board[y][x] = ' ';
         //check if I can with after placing this position
-        return 1;
+        return 0;
     }
 
     private boolean checkIfICanWin(int y, int x, char[][] testBoard) {
