@@ -4,7 +4,6 @@ import Framework.Config;
 import Framework.Dialogs.ErrorDialog;
 import Framework.Dialogs.UserNameDialog;
 import Framework.GUI.Base;
-import Framework.GUI.Board;
 import Framework.Networking.Request.LoginRequest;
 import Framework.Networking.Request.Request;
 import TicTacToe.Start;
@@ -25,6 +24,8 @@ public class BaseController extends Base {
     private BoardController boardController;
     private ControlsController controlsController;
 
+    private String loggedInPlayer;
+
     @Override
     public void initialize() {
         super.initialize();
@@ -43,10 +44,10 @@ public class BaseController extends Base {
         ErrorDialog errorDialog;
 
         try {
-            if (playerName != null) {
+            if (playerName != null && !playerName.trim().equals("")) {
                 loginRequest = new LoginRequest(Start.getConn(), playerName);
                 loginRequest.execute();
-                System.out.println("Send login request for playerName: " + playerName);
+                loggedInPlayer = playerName;
                 return;
             }
         }  catch (IOException|InterruptedException e) {
@@ -86,5 +87,9 @@ public class BaseController extends Base {
 
     public ControlsController getControlsController() {
         return this.controlsController;
+    }
+
+    public String getLoggedInPlayer() {
+        return loggedInPlayer;
     }
 }

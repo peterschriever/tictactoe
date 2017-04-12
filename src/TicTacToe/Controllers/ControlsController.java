@@ -3,16 +3,18 @@ package TicTacToe.Controllers;
 import Framework.Config;
 import Framework.Dialogs.DialogInterface;
 import Framework.Dialogs.ErrorDialog;
-import Framework.Networking.Connection;
 import Framework.Networking.Request.ChallengeRequest;
+import Framework.Networking.Request.GetPlayerListRequest;
 import Framework.Networking.Request.Request;
 import TicTacToe.Start;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 
@@ -20,6 +22,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Eran on 6-4-2017.
@@ -39,14 +44,19 @@ public class ControlsController implements Initializable {
     @FXML
     HBox controlsBox;
 
+    @FXML
+    CheckBox chkPlayAsBot;
+
+    private boolean isBotPlaying;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //setting the player list
-
         this.initPlayerChallenging();
-
         this.initComputerChallenging();
 
+        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+        exec.scheduleAtFixedRate(new PlayerGetter(), 0, 5, TimeUnit.SECONDS);
     }
 
     private void initComputerChallenging() {
@@ -71,7 +81,6 @@ public class ControlsController implements Initializable {
         playerList.setItems(possiblePlayers);
 
         challengePlayer.setOnAction(e -> this.challengePlayer());
-
     }
 
     @FXML
@@ -83,11 +92,7 @@ public class ControlsController implements Initializable {
             new ErrorDialog("Error", "Please select an user").display();
         } else {
             try {
-                Connection connection = new Connection("145.33.225.170", 7789, new NetworkEventsController());
-                //@todo: delete method?
-                connection.setupInputObserver();
-
-                ChallengeRequest request = new ChallengeRequest(connection, selectedPlayer, "Tic-Tac-Toe");
+                ChallengeRequest request = new ChallengeRequest(Start.getConn(), selectedPlayer, "Tic-tac-toe");
                 request.execute();
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
@@ -97,7 +102,12 @@ public class ControlsController implements Initializable {
 
     public void updatePlayerList(List<String> playerList) {
         ObservableList<String> list = FXCollections.observableArrayList(playerList);
-        this.playerList.setItems(list);
+        list.remove(Start.getBaseController().getLoggedInPlayer()); // make sure not to include ourselves
+        Platform.runLater(() -> this.playerList.setItems(list));
+    }
+
+    public void toggleBotPlaying(ActionEvent event) {
+        isBotPlaying = chkPlayAsBot.isSelected();
     }
 
     /**
@@ -115,5 +125,20 @@ public class ControlsController implements Initializable {
         }
     }
 
+    public boolean isBotPlaying() {
+        return isBotPlaying;
+    }
+
+    private class PlayerGetter implements Runnable {
+        @Override
+        public void run() {
+            try {
+                GetPlayerListRequest request = new GetPlayerListRequest(Start.getConn());
+                request.execute();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }

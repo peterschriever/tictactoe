@@ -37,7 +37,7 @@ public class BoardController extends Board {
 
     private static final String gridCellStyle = "-fx-border-color: black; -fx-border-width:1;";
     private static final String cellTakenStyle = "-fx-border-color: red; -fx-border-width:1;";
-    private static final String preGameGridStyle = "-fx-border-color: orange;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
+    private static final String preGameGridStyle = "-fx-border-color: yellow;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
     private static final String ourTurnGridStyle = "-fx-border-color: green;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
     private static final String theirTurnGridStyle = "-fx-border-color: red;-fx-border-width:3;-fx-padding: 10 10 10 10;-fx-border-insets: 10 10 10 10;";
     private static double cellWidth;
@@ -49,6 +49,10 @@ public class BoardController extends Board {
 
     public GameLogicInterface getGameLogic() {
         return ttt;
+    }
+
+    public void resetGameLogic() {
+        ttt = new TTTGame();
     }
 
     public void initialize() {
@@ -85,7 +89,10 @@ public class BoardController extends Board {
                 gridPane.setHalignment(label, HPos.CENTER);
                 label.setStyle(gridCellStyle);
                 label.setGraphic(imageView);
-                gridPane.add(label, j, i);
+
+                final int finali = i;
+                final int finalj = j;
+                Platform.runLater(() -> gridPane.add(label, finalj, finali));
             }
         }
         gridPane.setStyle(preGameGridStyle);
@@ -131,7 +138,7 @@ public class BoardController extends Board {
 
         // set isOurTurn false
         isOurTurn = false;
-        gridPane.setStyle(theirTurnGridStyle);
+        Platform.runLater(() -> gridPane.setStyle(theirTurnGridStyle));
     }
 
     // Move received from server
@@ -140,15 +147,16 @@ public class BoardController extends Board {
         ObservableList<Node> childrenList = gridPane.getChildren();
         for (Node node : childrenList) {
             if (gridPane.getRowIndex(node) == y && gridPane.getColumnIndex(node) == x) {
-                gridPane.getChildren().remove(node);
+                Platform.runLater(() -> gridPane.getChildren().remove(node));
                 break;
             }
         }
+        // gridPane updaten with move
+        Platform.runLater(() -> gridPane.add(newLabel, x, y));
+
         // model updaten
         char turn = player.charAt(0);
         ttt.doTurn(y, x, turn);
-        // gridPane updaten with move
-        gridPane.add(newLabel, y, x);
     }
 
     private CustomLabel makeLabel(int x, int y, String turn) {
@@ -179,27 +187,49 @@ public class BoardController extends Board {
     public Map<Integer, int[]> getListOfCoordinates() {
         Map<Integer, int[]> listOfCoordinates = new HashMap<>();
         int key = 0;
-        int[] values = new int[2];
-        for (int i = 0; i < BOARDSIZE; i++) {
-            for (int j = 0; j < BOARDSIZE; j++) {
-                key = i * BOARDSIZE + j;
-                values[0] = i;
-                values[1] = j;
-                listOfCoordinates.put(key, values);
+        for (int y = 0; y < BOARDSIZE; y++) {
+            for (int x = 0; x < BOARDSIZE; x++) {
+                listOfCoordinates.put(key, new int[]{x, y});
+                key++;
             }
         }
         return listOfCoordinates;
     }
 
     public void loadPreGameBoardState() {
-        // gameLogic = null; || gameLogic = new Game();
-        gridPane.getChildren().removeAll();
-        loadGrid();
-        gridPane.setStyle(preGameGridStyle);
+        System.out.println("PreGameBoardState Loaded!");
+        Platform.runLater(() -> gridPane.getChildren().clear());
+        Platform.runLater(this::loadGrid);
     }
 
     public void setOurTurn() {
-        gridPane.setStyle(ourTurnGridStyle);
+        System.out.println("ourTurn called: setStyle!");
+        Platform.runLater(() -> gridPane.setStyle(ourTurnGridStyle));
         isOurTurn = true;
+    }
+
+    public void doAIMove() {
+        int[] moveCoords = getAI().doTurn(getGameLogic().getBoard());
+        try {
+            // setMove updates gameLogic and GUI
+            setMove(moveCoords[0], moveCoords[1], Config.get("game", "useCharacterForPlayer"));
+
+            // send moveRequest to game server
+            int pos = moveCoords[0] * BOARDSIZE + moveCoords[1];
+            System.out.println("AI MOVE GEN: " + moveCoords[0] + "," + moveCoords[1] + " == " + pos);
+            Request moveRequest = new MoveRequest(Start.getConn(), pos);
+            moveRequest.execute();
+
+            // set isOurTurn false
+            isOurTurn = false;
+            Platform.runLater(() -> gridPane.setStyle(theirTurnGridStyle));
+        } catch (IOException e) {
+            DialogInterface errDialog = new ErrorDialog("Config error", "Could not load property: useCharacterForPlayer." +
+                    "\nPlease check your game.properties file.");
+            Platform.runLater(errDialog::display);
+        } catch (InterruptedException e) {
+            DialogInterface errDialog = new ErrorDialog("InterruptedException", "Could not send request: moveRequest.");
+            Platform.runLater(errDialog::display);
+        }
     }
 }
