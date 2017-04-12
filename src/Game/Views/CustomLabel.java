@@ -1,4 +1,4 @@
-package TicTacToe.Views;
+package Game.Views;
 
 import javafx.scene.control.Label;
 

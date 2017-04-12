@@ -1,8 +1,8 @@
-package TicTacToe.Controllers;
+package Game.Controllers;
 
 import Framework.Dialogs.DialogEvents;
 import Framework.Networking.Request.ChallengeAcceptRequest;
-import TicTacToe.Start;
+import Game.StartGame;
 
 import java.io.IOException;
 
@@ -13,12 +13,12 @@ import java.io.IOException;
 public class DialogEventsController implements DialogEvents {
     @Override
     public void attemptLogin(String playerName) {
-        Start.getBaseController().attemptPlayerLogin(playerName);
+        StartGame.getBaseController().attemptPlayerLogin(playerName);
     }
 
     @Override
     public void challengeReceived(int challengeNr){
-        ChallengeAcceptRequest acceptRequest = new ChallengeAcceptRequest(Start.getConn(), challengeNr);
+        ChallengeAcceptRequest acceptRequest = new ChallengeAcceptRequest(StartGame.getConn(), challengeNr);
         try {
             acceptRequest.execute();
             System.out.println("AcceptRequest executed");
