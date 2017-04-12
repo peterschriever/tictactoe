@@ -26,4 +26,7 @@ public class DialogEventsController implements DialogEvents {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void setupConnection(String ipAddress, String portNr){};
 }
