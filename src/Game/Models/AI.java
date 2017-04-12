@@ -1,4 +1,4 @@
-package TicTacToe.Models;
+package Game.Models;
 
 import Framework.AI.BotInterface;
 

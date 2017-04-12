@@ -1,4 +1,4 @@
-package TicTacToe.Controllers;
+package Game.Controllers;
 
 import Framework.AI.BotInterface;
 import Framework.Config;
@@ -8,10 +8,10 @@ import Framework.GUI.Board;
 import Framework.Game.GameLogicInterface;
 import Framework.Networking.Request.MoveRequest;
 import Framework.Networking.Request.Request;
-import TicTacToe.Models.AI;
-import TicTacToe.Models.TTTGame;
-import TicTacToe.Start;
-import TicTacToe.Views.CustomLabel;
+import Game.Models.AI;
+import Game.Models.TTTGame;
+import Game.StartGame;
+import Game.Views.CustomLabel;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -76,7 +76,7 @@ public class BoardController extends Board {
         int j;
         for (i = 0; i < BOARDSIZE; i++) {
             for (j = 0; j < BOARDSIZE; j++) {
-                Image image = new Image(BoardController.class.getClassLoader().getResourceAsStream("./Empty.png"));
+                Image image = new Image(BoardController.class.getClassLoader().getResourceAsStream("Empty.png"));
                 ImageView imageView = new ImageView();
                 imageView.setFitHeight(cellHeight - 5);
                 imageView.setFitWidth(cellWidth - 5);
@@ -128,7 +128,7 @@ public class BoardController extends Board {
 
         // send MoveRequest to game server
         int pos = x * BOARDSIZE + y;
-        Request moveRequest = new MoveRequest(Start.getConn(), pos);
+        Request moveRequest = new MoveRequest(StartGame.getConn(), pos);
         try {
             moveRequest.execute();
         } catch (IOException | InterruptedException e) {
@@ -166,14 +166,14 @@ public class BoardController extends Board {
         imageView.setFitWidth(50.0);
         newLabel.setStyle(cellTakenStyle);
         if (turn.equals("X")) {
-            Image image = new Image(BoardController.class.getClassLoader().getResourceAsStream("./X.png"));
+            Image image = new Image(BoardController.class.getClassLoader().getResourceAsStream("X.png"));
             imageView.setImage(image);
             newLabel.setGraphic(imageView);
             newLabel.setX(x);
             newLabel.setY(y);
             gridPane.setHalignment(newLabel, HPos.CENTER);
         } else {
-            Image image = new Image(BoardController.class.getClassLoader().getResourceAsStream("./O.png"));
+            Image image = new Image(BoardController.class.getClassLoader().getResourceAsStream("O.png"));
             imageView.setImage(image);
             newLabel.setGraphic(imageView);
             newLabel.setX(x);
@@ -217,7 +217,7 @@ public class BoardController extends Board {
             // send moveRequest to game server
             int pos = moveCoords[0] * BOARDSIZE + moveCoords[1];
             System.out.println("AI MOVE GEN: " + moveCoords[0] + "," + moveCoords[1] + " == " + pos);
-            Request moveRequest = new MoveRequest(Start.getConn(), pos);
+            Request moveRequest = new MoveRequest(StartGame.getConn(), pos);
             moveRequest.execute();
 
             // set isOurTurn false

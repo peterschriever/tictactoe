@@ -1,9 +1,9 @@
-package TicTacToe.Controllers;
+package Game.Controllers;
 
 import Framework.Dialogs.*;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.*;
-import TicTacToe.Start;
+import Game.StartGame;
 import javafx.application.Platform;
 
 
@@ -20,7 +20,7 @@ public class NetworkEventsController implements NetworkEvents {
 
     @Override
     public void challengeReceived(ChallengeReceivedResponse response) {
-        AbstractDialog challengeDialog = new ChallengeReceivedDialog(Start.getDialogEventsController(), response.getChallenger(), response.getChallengeNumber());
+        AbstractDialog challengeDialog = new ChallengeReceivedDialog(StartGame.getDialogEventsController(), response.getChallenger(), response.getChallengeNumber());
         Platform.runLater(challengeDialog::display);
     }
 
@@ -40,13 +40,13 @@ public class NetworkEventsController implements NetworkEvents {
         Platform.runLater(gameEndedDialog::display);
 
         // reset / update game-logic models (via BoardController)
-        Start.getBaseController().getBoardController().resetGameLogic();
+        StartGame.getBaseController().getBoardController().resetGameLogic();
 
         // reset / update BoardView look (via BoardController)
-        Start.getBaseController().getBoardController().loadPreGameBoardState();
+        StartGame.getBaseController().getBoardController().loadPreGameBoardState();
 
         // reset GUI (enable ControlsController buttons)
-        Start.getBaseController().getControlsController().enableControls();
+        StartGame.getBaseController().getControlsController().enableControls();
     }
 
     @Override
@@ -57,16 +57,16 @@ public class NetworkEventsController implements NetworkEvents {
     @Override
     public void matchReceived(MatchReceivedResponse matchReceivedResponse) {
         //Reset the board
-        Start.getBaseController().getBoardController().loadPreGameBoardState();
+        StartGame.getBaseController().getBoardController().loadPreGameBoardState();
 
         //Disable the controls
-        Start.getBaseController().getControlsController().disableControls();
+        StartGame.getBaseController().getControlsController().disableControls();
     }
 
     @Override
     public void moveReceived(MoveResponse response) {
         String player = response.getMovingPlayer();
-        if (player.equals(Start.getBaseController().getLoggedInPlayer())) {
+        if (player.equals(StartGame.getBaseController().getLoggedInPlayer())) {
             return; // ignore moves we have made ourselves.
         }
         if (response.getMoveDetails() != null && response.getMoveDetails().equals("Illegal move")) {
@@ -74,7 +74,7 @@ public class NetworkEventsController implements NetworkEvents {
         }
 
         int position = response.getMovePosition();
-        BoardController boardController = Start.getBaseController().getBoardController();
+        BoardController boardController = StartGame.getBaseController().getBoardController();
         int[] coordinates = boardController.getListOfCoordinates().get(position);
         System.out.println("MOVE Received: position: " + position + " coordinates[0]: " + coordinates[0] + " coordinates[1]: " + coordinates[1]);
 
@@ -87,17 +87,17 @@ public class NetworkEventsController implements NetworkEvents {
     @Override
     public void ourTurn(OurTurnResponse ourTurnResponse) {
         // update GUI (and enable possibility to move) to reflect turn change
-        Start.getBaseController().getBoardController().setOurTurn();
+        StartGame.getBaseController().getBoardController().setOurTurn();
 
         // let the AI generate a move if needed
-        if (Start.getBaseController().getControlsController().isBotPlaying()) {
-            Start.getBaseController().getBoardController().doAIMove();
+        if (StartGame.getBaseController().getControlsController().isBotPlaying()) {
+            StartGame.getBaseController().getBoardController().doAIMove();
         }
     }
 
     @Override
     public void playerListReceived(PlayerListResponse response) {
-        Start.getBaseController().getControlsController().updatePlayerList(response.getPlayerList());
+        StartGame.getBaseController().getControlsController().updatePlayerList(response.getPlayerList());
     }
 
     @Override
