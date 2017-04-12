@@ -3,6 +3,7 @@ package TicTacToe.Controllers;
 import Framework.Dialogs.*;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.*;
+import TicTacToe.Models.TTTGame;
 import TicTacToe.Start;
 import javafx.application.Platform;
 
@@ -61,6 +62,8 @@ public class NetworkEventsController implements NetworkEvents {
 
         //Disable the controls
         Start.getBaseController().getControlsController().disableControls();
+
+        Start.getBaseController().getBoardController().ttt = new TTTGame();
     }
 
     @Override
