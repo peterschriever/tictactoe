@@ -142,7 +142,7 @@ public class BoardController extends Board {
     }
 
     // Move received from server
-    public void setMove(int x, int y, String player) {
+    public void setMove(int x, int y, String player) throws IOException {
         CustomLabel newLabel = makeLabel(x, y, player);
         ObservableList<Node> childrenList = gridPane.getChildren();
         for (Node node : childrenList) {
@@ -156,7 +156,14 @@ public class BoardController extends Board {
 
         // model updaten
         char turn = player.charAt(0);
-        ttt.doTurn(y, x, turn);
+        System.out.println("x"+turn);
+
+        if(player.equals(Start.getBaseController().getLoggedInPlayer())) {
+            ttt.doTurn(y, x, Config.get("game", "useCharacterForPlayer").charAt(0));
+        }
+        else {
+            ttt.doTurn(y, x, turn);
+        }
     }
 
     private CustomLabel makeLabel(int x, int y, String turn) {
@@ -201,7 +208,6 @@ public class BoardController extends Board {
         Platform.runLater(() -> gridPane.getChildren().clear());
         Platform.runLater(this::loadGrid);
     }
-
     public void setOurTurn() {
         System.out.println("ourTurn called: setStyle!");
         Platform.runLater(() -> gridPane.setStyle(ourTurnGridStyle));
@@ -215,7 +221,7 @@ public class BoardController extends Board {
             setMove(moveCoords[0], moveCoords[1], Config.get("game", "useCharacterForPlayer"));
 
             // send moveRequest to game server
-            int pos = moveCoords[0] * BOARDSIZE + moveCoords[1];
+            int pos = moveCoords[1] * BOARDSIZE + moveCoords[0];
             System.out.println("AI MOVE GEN: " + moveCoords[0] + "," + moveCoords[1] + " == " + pos);
             Request moveRequest = new MoveRequest(Start.getConn(), pos);
             moveRequest.execute();
