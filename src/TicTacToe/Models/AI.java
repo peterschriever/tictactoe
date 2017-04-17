@@ -2,7 +2,6 @@ package TicTacToe.Models;
 
 import Framework.AI.BotInterface;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,10 +46,8 @@ public class AI implements BotInterface {
             }
         }
 
-        System.out.println(this.possibleTurns);
 
         this.placeTurn();
-
         // Return this turns AI move [0:x, 1:y]
         return this.lastMove;
     }
@@ -128,10 +125,6 @@ public class AI implements BotInterface {
 
         //Replace the tic-tac-toe board with the board where the AI placed his turn
         this.TTTGame.setBoard(newBoard);
-
-
-        //Debug
-        System.out.println(Arrays.deepToString(newBoard));
 
     }
 
