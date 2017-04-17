@@ -2,6 +2,7 @@ package Game.Models;
 
 import Framework.AI.BotInterface;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +47,8 @@ public class AI implements BotInterface {
             }
         }
 
+        System.out.println(this.possibleTurns);
+
 
         this.placeTurn();
         // Return this turns AI move [0:x, 1:y]
@@ -53,17 +56,17 @@ public class AI implements BotInterface {
     }
 
     private int getScore(int y, int x, char[][] board) {
-        board[y][x] = this.player;
+        //board[y][x] = this.player;
         //check if I can win with this position
         if(this.checkIfICanWin(y, x, board)) {
             board[y][x] = ' ';
-            return 10;
+            return 5;
         }
 
         //check if the other player can win with this position
         if(this.checkIfOtherCanWin(y, x, board)) {
             board[y][x] = ' ';
-            return 5;
+            return 10;
         }
 
         board[y][x] = ' ';
@@ -83,6 +86,8 @@ public class AI implements BotInterface {
     private boolean checkIfOtherCanWin(int y, int x, char[][] testBoard) {
         char player = this.oppositePlayer();
         testBoard[y][x] = player;
+
+        System.out.println("Huidige speler AI: " + this.player + ", andere speler: " + player);
 
         return (testBoard[y][0] == player && testBoard[y][1] == player && testBoard[y][2] == player) ||
                 (testBoard[0][x] == player && testBoard[1][x] == player && testBoard[2][x] == player) ||
@@ -123,15 +128,17 @@ public class AI implements BotInterface {
         this.lastMove[0] = x;
         this.lastMove[1] = y;
 
+        System.out.println(this.lastMove[1]+""+this.lastMove[0]);
+
         //Replace the tic-tac-toe board with the board where the AI placed his turn
         this.TTTGame.setBoard(newBoard);
 
     }
 
     private char oppositePlayer() {
-        if(this.player == 'o') {
-            return 'x';
+        if(this.player == 'O') {
+            return 'X';
         }
-        return 'o';
+        return 'O';
     }
 }
