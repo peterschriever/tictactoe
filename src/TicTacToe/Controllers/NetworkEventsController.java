@@ -1,11 +1,14 @@
 package TicTacToe.Controllers;
 
+import Framework.Config;
 import Framework.Dialogs.*;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.*;
 import TicTacToe.Models.TTTGame;
 import TicTacToe.Start;
 import javafx.application.Platform;
+
+import java.io.IOException;
 
 
 /**
@@ -40,14 +43,9 @@ public class NetworkEventsController implements NetworkEvents {
         );
         Platform.runLater(gameEndedDialog::display);
 
-        // reset / update game-logic models (via BoardController)
-        Start.getBaseController().getBoardController().resetGameLogic();
-
-        // reset / update BoardView look (via BoardController)
-        Start.getBaseController().getBoardController().loadPreGameBoardState();
-
         // reset GUI (enable ControlsController buttons)
         Start.getBaseController().getControlsController().enableControls();
+
     }
 
     @Override
@@ -63,7 +61,15 @@ public class NetworkEventsController implements NetworkEvents {
         //Disable the controls
         Start.getBaseController().getControlsController().disableControls();
 
+
         Start.getBaseController().getBoardController().ttt = new TTTGame();
+
+        // reset / update game-logic models (via BoardController)
+        Start.getBaseController().getBoardController().resetGameLogic();
+
+        // reset / update BoardView look (via BoardController)
+        Start.getBaseController().getBoardController().loadPreGameBoardState();
+
     }
 
     @Override
@@ -71,6 +77,13 @@ public class NetworkEventsController implements NetworkEvents {
         String player = response.getMovingPlayer();
         if (player.equals(Start.getBaseController().getLoggedInPlayer())) {
             return; // ignore moves we have made ourselves.
+        }
+        else {
+            try {
+                player = Config.get("game", "useCharacterForOpponent");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         if (response.getMoveDetails() != null && response.getMoveDetails().equals("Illegal move")) {
             return; // ignore an illegal move, to prevent getting exceptions on our position conversion
@@ -84,7 +97,11 @@ public class NetworkEventsController implements NetworkEvents {
         int x = coordinates[0];
         int y = coordinates[1];
         // update view via BoardController
-        boardController.setMove(x, y, player);
+        try {
+            boardController.setMove(x, y, player);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
