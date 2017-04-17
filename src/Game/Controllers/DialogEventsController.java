@@ -27,6 +27,5 @@ public class DialogEventsController implements DialogEvents {
         }
     }
 
-    @Override
     public void setupConnection(String ipAddress, String portNr){};
 }
