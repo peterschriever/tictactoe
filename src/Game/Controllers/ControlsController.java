@@ -1,4 +1,4 @@
-package TicTacToe.Controllers;
+package Game.Controllers;
 
 import Framework.Config;
 import Framework.Dialogs.DialogInterface;
@@ -6,7 +6,7 @@ import Framework.Dialogs.ErrorDialog;
 import Framework.Networking.Request.ChallengeRequest;
 import Framework.Networking.Request.GetPlayerListRequest;
 import Framework.Networking.Request.Request;
-import TicTacToe.Start;
+import Game.StartGame;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -65,8 +65,8 @@ public class ControlsController implements Initializable {
 
     private void challengeComputer() {
         try {
-            Start.toggleConnection();
-            Request challengeBot = new ChallengeRequest(Start.getConn(), Config.get("game", "botName"), "Tic-tac-toe");
+            StartGame.toggleConnection();
+            Request challengeBot = new ChallengeRequest(StartGame.getConn(), Config.get("game", "botName"), "Tic-tac-toe");
             challengeBot.execute();
         } catch (InterruptedException | IOException e) {
             DialogInterface errorDialog = new ErrorDialog("Config error", "Could not load property: useCharacterForPlayer." +
@@ -92,7 +92,7 @@ public class ControlsController implements Initializable {
             new ErrorDialog("Error", "Please select an user").display();
         } else {
             try {
-                ChallengeRequest request = new ChallengeRequest(Start.getConn(), selectedPlayer, "Tic-tac-toe");
+                ChallengeRequest request = new ChallengeRequest(StartGame.getConn(), selectedPlayer, "Tic-tac-toe");
                 request.execute();
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
@@ -102,7 +102,7 @@ public class ControlsController implements Initializable {
 
     public void updatePlayerList(List<String> playerList) {
         ObservableList<String> list = FXCollections.observableArrayList(playerList);
-        list.remove(Start.getBaseController().getLoggedInPlayer()); // make sure not to include ourselves
+        list.remove(StartGame.getBaseController().getLoggedInPlayer()); // make sure not to include ourselves
         Platform.runLater(() -> this.playerList.setItems(list));
     }
 
@@ -133,7 +133,7 @@ public class ControlsController implements Initializable {
         @Override
         public void run() {
             try {
-                GetPlayerListRequest request = new GetPlayerListRequest(Start.getConn());
+                GetPlayerListRequest request = new GetPlayerListRequest(StartGame.getConn());
                 request.execute();
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();

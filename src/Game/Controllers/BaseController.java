@@ -1,4 +1,4 @@
-package TicTacToe.Controllers;
+package Game.Controllers;
 
 import Framework.Config;
 import Framework.Dialogs.ErrorDialog;
@@ -6,7 +6,7 @@ import Framework.Dialogs.UserNameDialog;
 import Framework.GUI.Base;
 import Framework.Networking.Request.LoginRequest;
 import Framework.Networking.Request.Request;
-import TicTacToe.Start;
+import Game.StartGame;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -30,7 +30,7 @@ public class BaseController extends Base {
     public void initialize() {
         super.initialize();
         // setup Connection response observer
-        Start.getConn().setupInputObserver();
+        StartGame.getConn().setupInputObserver();
         try {
             attemptPlayerLogin(Config.get("game", "playerName"));
         } catch (IOException e) {
@@ -45,7 +45,7 @@ public class BaseController extends Base {
 
         try {
             if (playerName != null && !playerName.trim().equals("")) {
-                loginRequest = new LoginRequest(Start.getConn(), playerName);
+                loginRequest = new LoginRequest(StartGame.getConn(), playerName);
                 loginRequest.execute();
                 loggedInPlayer = playerName;
                 return;
@@ -55,7 +55,7 @@ public class BaseController extends Base {
             Platform.runLater(errorDialog::display);
         }
         // Config was null or failed: show UsernameDialog
-        UserNameDialog loginDialog = new UserNameDialog(Start.getDialogEventsController());
+        UserNameDialog loginDialog = new UserNameDialog(StartGame.getDialogEventsController());
         Platform.runLater(loginDialog::display);
     }
 
@@ -75,7 +75,7 @@ public class BaseController extends Base {
         container.getChildren().add(partial);
 
         this.controlsController = new ControlsController();
-        fxmlLoader = new FXMLLoader(getClass().getResource("/TicTacToe/Views/controls.fxml"));
+        fxmlLoader = new FXMLLoader(getClass().getResource("/Game/Views/controls.fxml"));
         fxmlLoader.setController(this.controlsController);
         Parent controls = fxmlLoader.load();
         container.getChildren().add(controls);

@@ -1,4 +1,4 @@
-package TicTacToe;
+package Game;
 
 import Framework.AI.BotInterface;
 import Framework.Config;
@@ -9,11 +9,11 @@ import Framework.Networking.Connection;
 import Framework.Networking.ConnectionInterface;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.SimulatedConnection;
-import TicTacToe.Controllers.BaseController;
-import TicTacToe.Controllers.DialogEventsController;
-import TicTacToe.Controllers.NetworkEventsController;
-import TicTacToe.Models.AI;
-import TicTacToe.Models.TTTGame;
+import Game.Controllers.BaseController;
+import Game.Controllers.DialogEventsController;
+import Game.Controllers.NetworkEventsController;
+import Game.Models.AI;
+import Game.Models.TTTGame;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,7 +28,7 @@ import java.util.Scanner;
  * Created by peterzen on 2017-03-23.
  * Part of the tictactoe project.
  */
-public class Start extends Application implements GameStart {
+public class StartGame extends Application implements GameStart {
     private Scene scene;
     private Stage stage;
     private static ConnectionInterface conn;
@@ -43,10 +43,10 @@ public class Start extends Application implements GameStart {
     }
 
     public static void main(String[] args, Stage stage, Scene scene) throws IOException, InterruptedException {
-        new Start(stage, scene);
+        new StartGame(stage, scene);
     }
 
-    public Start(Stage stage, Scene scene) throws IOException {
+    public StartGame(Stage stage, Scene scene) throws IOException {
         // Scene meegegeven die weer wordt vervangen door updateGameScene method. --> dus, is dit nodig?
         this.stage = stage;
         this.scene = scene;
@@ -65,7 +65,7 @@ public class Start extends Application implements GameStart {
         this.start();
     }
 
-    public Start() {
+    public StartGame() {
         // This constructor only exists to support stand-alone starting
     }
 
@@ -91,7 +91,7 @@ public class Start extends Application implements GameStart {
     @Override
     public void start(Stage stage) throws Exception {
         // when being started standalone
-        new Start(stage, null);
+        new StartGame(stage, null);
     }
 
     @Override
