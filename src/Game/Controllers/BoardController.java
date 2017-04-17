@@ -158,7 +158,7 @@ public class BoardController extends Board {
         char turn = player.charAt(0);
         System.out.println("x"+turn);
 
-        if(player.equals(Start.getBaseController().getLoggedInPlayer())) {
+        if(player.equals(StartGame.getBaseController().getLoggedInPlayer())) {
             ttt.doTurn(y, x, Config.get("game", "useCharacterForPlayer").charAt(0));
         }
         else {
