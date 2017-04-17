@@ -4,6 +4,7 @@ import Framework.Config;
 import Framework.Dialogs.*;
 import Framework.Networking.NetworkEvents;
 import Framework.Networking.Response.*;
+import Framework.Start;
 import Game.Models.TTTGame;
 import Game.StartGame;
 import javafx.application.Platform;
@@ -43,11 +44,8 @@ public class NetworkEventsController implements NetworkEvents {
         );
         Platform.runLater(gameEndedDialog::display);
 
-        // reset / update game-logic models (via BoardController)
-        StartGame.getBaseController().getBoardController().resetGameLogic();
+        StartGame.getBaseController().getControlsController().enableControls();
 
-        // reset / update BoardView look (via BoardController)
-        StartGame.getBaseController().getBoardController().loadPreGameBoardState();
     }
 
     @Override
@@ -57,11 +55,13 @@ public class NetworkEventsController implements NetworkEvents {
 
     @Override
     public void matchReceived(MatchReceivedResponse matchReceivedResponse) {
-        //Reset the board
+        // reset / update BoardView look (via BoardController)
         StartGame.getBaseController().getBoardController().loadPreGameBoardState();
 
+        // reset / update game-logic models (via BoardController)
+        StartGame.getBaseController().getBoardController().resetGameLogic();
+
         //Disable the controls
-        StartGame.getBaseController().getControlsController().disableControls();
         StartGame.getBaseController().getControlsController().disableControls();
 
         StartGame.getBaseController().getBoardController().ttt = new TTTGame();
